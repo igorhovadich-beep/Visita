@@ -1,0 +1,68 @@
+EnergizaCar — Formulário de Visita Técnica (versão 2.0)
+=======================================================
+
+POR QUE ESTA PASTA EXISTE
+-------------------------
+Desde o iOS 18.5 o iPhone não executa arquivo HTML aberto direto do aparelho,
+nem pelo Safari nem pelo app Arquivos. A tela até aparece, mas os botões não
+funcionam. Não existe contorno por arquivo: o formulário precisa vir de um
+endereço https://.
+
+Publicando esta pasta em qualquer endereço https, o formulário passa a
+funcionar em iPhone e Android, e continua funcionando SEM SINAL depois da
+primeira abertura — o próprio formulário se guarda no aparelho.
+
+
+O QUE TEM AQUI
+--------------
+index.html              o formulário
+sw.js                   guarda o formulário no aparelho (funcionamento sem sinal)
+manifest.webmanifest    faz virar aplicativo com ícone próprio
+icone-192.png           ícone
+icone-512.png           ícone
+LEIA-ME.txt             este arquivo
+
+Suba a pasta inteira. Os cinco arquivos precisam ficar juntos, no mesmo nível.
+
+
+ONDE PUBLICAR — três caminhos
+-----------------------------
+1) SITE DA ENERGIZACAR (melhor opção se já existe hospedagem)
+   Suba a pasta para o servidor, por exemplo em /visita.
+   Endereço final: https://www.energizacar.com.br/visita/
+
+2) GITHUB PAGES (gratuito, endereço permanente)
+   Criar conta em github.com, novo repositório público, enviar os arquivos,
+   Settings > Pages > Branch: main > Save.
+   Endereço final: https://SEUUSUARIO.github.io/REPOSITORIO/
+
+3) CLOUDFLARE PAGES OU NETLIFY (gratuito, arrasta e solta a pasta)
+   Endereço final gerado automaticamente, do tipo
+   https://visita-energizacar.pages.dev
+
+
+COMO O TÉCNICO INSTALA NO CELULAR
+---------------------------------
+iPhone (Safari — precisa ser o Safari)
+  1. Abrir o endereço no Safari.
+  2. Botão Compartilhar (quadrado com seta para cima).
+  3. Adicionar à Tela de Início.
+  4. Usar sempre pelo ícone.
+
+Android (Chrome)
+  1. Abrir o endereço no Chrome.
+  2. Menu ⋮ > Adicionar à tela inicial (ou o aviso "Instalar aplicativo").
+  3. Usar sempre pelo ícone.
+
+Depois de instalado, abre sem internet. Garagem de prédio sem sinal não
+atrapalha: o formulário, as fotos e o rascunho ficam no aparelho.
+
+
+AO ATUALIZAR O FORMULÁRIO
+-------------------------
+Trocar os arquivos no servidor e alterar a linha
+
+    const CACHE = 'energizacar-visita-v2.0';
+
+em sw.js para v2.1, v2.2 e assim por diante. Sem trocar esse número, o celular
+continua abrindo a versão antiga que guardou.

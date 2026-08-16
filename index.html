@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E5C46">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icone-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Visita Técnica">
+<title>EnergizaCar — Formulário de Visita Técnica</title>
+<style>
+:root{
+  --v:#0E5C46; --v2:#127A5C; --lima:#8ED81F;
+  --bg:#F2F6F4; --card:#FFFFFF; --tx:#11221D; --mut:#5C7269; --bd:#D6E2DC;
+  --ok:#1E8E5A; --am:#B87700; --vm:#C0392B;
+  --amBg:#FFF6E0; --vmBg:#FDECEA; --okBg:#EAF7F0; --inBg:#E8F1EE;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); color:var(--tx); font-size:16px; line-height:1.45;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+button,input,select,textarea{font-family:inherit;font-size:16px;color:inherit}
+
+/* ---------- cabeçalho ---------- */
+header{
+  position:sticky;top:0;z-index:40;background:var(--v);color:#fff;
+  padding:calc(10px + env(safe-area-inset-top)) 14px 0;
+}
+.hrow{display:flex;align-items:center;gap:10px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;letter-spacing:.2px;font-size:15px}
+.logo .dot{width:11px;height:11px;border-radius:50%;background:var(--lima);flex:none}
+.hrow .sp{flex:1}
+.hbtn{
+  background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:#fff;
+  border-radius:9px;padding:7px 11px;font-size:13px;font-weight:600;cursor:pointer
+}
+.hsub{font-size:12.5px;opacity:.9;margin:3px 0 8px}
+.prog{height:6px;background:rgba(255,255,255,.22);border-radius:99px;overflow:hidden;margin-bottom:9px}
+.prog i{display:block;height:100%;background:var(--lima);width:0;transition:width .25s ease}
+
+main{padding:14px 14px 132px;max-width:720px;margin:0 auto}
+
+/* ---------- blocos ---------- */
+.step-h{margin:2px 0 12px}
+.step-h .n{font-size:12px;font-weight:800;color:var(--v2);letter-spacing:.6px;text-transform:uppercase}
+.step-h h2{margin:2px 0 3px;font-size:21px;line-height:1.2}
+.step-h p{margin:0;color:var(--mut);font-size:13.5px}
+
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+.fld{margin-bottom:14px}
+.fld:last-child{margin-bottom:0}
+label.lb{display:block;font-weight:700;font-size:14.5px;margin-bottom:7px}
+label.lb .op{font-weight:500;color:var(--mut);font-size:12.5px}
+.hint{font-size:12.5px;color:var(--mut);margin:-3px 0 7px}
+input[type=text],input[type=number],input[type=date],input[type=time],textarea,select{
+  width:100%;padding:13px 12px;border:1.5px solid var(--bd);border-radius:11px;background:#fff;
+  appearance:none;-webkit-appearance:none
+}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%235C7269'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat:no-repeat;background-position:right 10px center;background-size:22px;padding-right:38px}
+textarea{min-height:96px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--v2);box-shadow:0 0 0 3px rgba(18,122,92,.14)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:400px){.row2{grid-template-columns:1fr}}
+
+/* ---------- botões de opção ---------- */
+.opts{display:flex;flex-direction:column;gap:8px}
+.opts.h{flex-direction:row;flex-wrap:wrap}
+.opts.h .opt{flex:1 1 40%;text-align:center}
+.opt{
+  display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--bd);
+  border-radius:12px;padding:14px 13px;font-size:15px;font-weight:600;cursor:pointer;min-height:52px
+}
+.opt small{display:block;font-weight:500;color:var(--mut);font-size:12.5px;margin-top:2px}
+.opt.on{border-color:var(--v);background:var(--inBg);box-shadow:inset 0 0 0 1px var(--v)}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.yn .opt{text-align:center;padding:15px 8px;font-size:16px}
+.yn .opt.on[data-v="Sim"]{border-color:var(--ok);background:var(--okBg);box-shadow:inset 0 0 0 1px var(--ok);color:#12603F}
+.yn .opt.on[data-v="Não"]{border-color:var(--mut);background:#EEF2F0;box-shadow:inset 0 0 0 1px var(--mut)}
+
+.aviso{border-radius:11px;padding:11px 12px;font-size:13.5px;margin-top:9px;border:1px solid}
+.aviso.i{background:var(--inBg);border-color:#B9D6CC;color:#134C3B}
+.aviso.a{background:var(--amBg);border-color:#F0D28A;color:#7A5200}
+.aviso.e{background:var(--vmBg);border-color:#F2B9B2;color:#8E2820}
+.aviso b{font-weight:800}
+.err-fld{border-color:var(--vm) !important;box-shadow:0 0 0 3px rgba(192,57,43,.13) !important}
+.err-msg{color:var(--vm);font-size:13px;font-weight:700;margin-top:6px;display:none}
+.err-msg.on{display:block}
+
+/* ---------- fotos ---------- */
+.foto{border:1.5px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}
+.foto.done{border-color:var(--ok);background:var(--okBg)}
+.foto .ft{font-weight:700;font-size:14.5px;display:flex;gap:8px;align-items:flex-start}
+.foto .ft .num{
+  flex:none;width:23px;height:23px;border-radius:50%;background:var(--v);color:#fff;
+  font-size:12.5px;display:flex;align-items:center;justify-content:center;font-weight:800;margin-top:1px
+}
+.foto.done .ft .num{background:var(--ok)}
+.foto .fd{color:var(--mut);font-size:12.5px;margin:4px 0 9px;padding-left:31px}
+.foto .fa{display:flex;gap:8px;padding-left:31px;flex-wrap:wrap}
+.tira{display:flex;gap:8px;flex-wrap:wrap;padding-left:31px;margin-bottom:9px}
+.tira .th{position:relative;width:84px;height:84px;border-radius:9px;overflow:hidden;border:1px solid var(--bd)}
+.tira .th img{width:100%;height:100%;object-fit:cover;display:block}
+.tira .th button{
+  position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:none;
+  background:rgba(0,0,0,.62);color:#fff;font-size:15px;line-height:1;cursor:pointer;padding:0
+}
+.btn{
+  border:1.5px solid var(--bd);background:#fff;border-radius:11px;padding:12px 15px;
+  font-weight:700;font-size:14.5px;cursor:pointer;min-height:46px
+}
+.btn.p{background:var(--v);border-color:var(--v);color:#fff}
+.btn.s{background:var(--v2);border-color:var(--v2);color:#fff}
+.btn.g{background:#fff;color:var(--v);border-color:var(--v)}
+.btn:disabled{opacity:.45}
+.btn.full{width:100%;display:block}
+.cont{font-size:13px;font-weight:700;color:var(--v2)}
+
+/* ---------- rodapé ---------- */
+footer{
+  position:fixed;left:0;right:0;bottom:0;z-index:40;background:#fff;border-top:1px solid var(--bd);
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px;
+  box-shadow:0 -3px 14px rgba(0,0,0,.06)
+}
+footer .btn{flex:1}
+footer .btn.nav{flex:1.6}
+
+/* ---------- saída final ---------- */
+pre.out{
+  background:#0F221C;color:#DFF3EA;border-radius:12px;padding:12px;font-size:11.5px;line-height:1.45;
+  overflow:auto;max-height:280px;white-space:pre-wrap;word-break:break-word;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;margin:0
+}
+pre.resumo{background:#fff;color:var(--tx);border:1.5px solid var(--bd);font-size:13px;
+  font-family:inherit;max-height:320px}
+.sec-t{font-weight:800;font-size:15px;margin:0 0 4px;display:flex;align-items:center;gap:8px}
+.sec-t .tag{font-size:11px;font-weight:800;background:var(--inBg);color:var(--v);padding:3px 7px;border-radius:6px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.acts .btn{flex:1 1 46%}
+.chip{display:inline-block;font-size:12px;font-weight:700;padding:4px 9px;border-radius:99px;margin:0 5px 5px 0}
+.chip.ok{background:var(--okBg);color:#12603F}
+.chip.a{background:var(--amBg);color:#7A5200}
+.chip.e{background:var(--vmBg);color:#8E2820}
+
+/* ---------- modal ---------- */
+.ov{position:fixed;inset:0;background:rgba(10,25,20,.55);z-index:60;display:none;align-items:flex-end;justify-content:center}
+.ov.on{display:flex}
+.md{background:#fff;width:100%;max-width:560px;border-radius:16px 16px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}
+.md h3{margin:0 0 6px;font-size:19px}
+.md p{margin:0 0 14px;color:var(--mut);font-size:14px}
+.hist{border:1px solid var(--bd);border-radius:11px;padding:11px;margin-bottom:9px}
+.hist b{display:block;font-size:15px}
+.hist .m{color:var(--mut);font-size:12.5px;margin:2px 0 8px}
+.toast{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:96px;z-index:90;background:#11221D;color:#fff;
+  padding:11px 16px;border-radius:99px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s
+}
+.toast.on{opacity:1}
+.hide{display:none !important}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hrow">
+    <div class="logo"><span class="dot"></span>EnergizaCar</div>
+    <div class="sp"></div>
+    <button class="hbtn" id="btnHist" disabled>Histórico</button>
+    <button class="hbtn" id="btnNova" disabled>Nova</button>
+  </div>
+  <div class="hsub" id="hsub">Formulário de visita técnica</div>
+  <div class="prog"><i id="progBar"></i></div>
+</header>
+
+<main id="main">
+  <div class="card">
+    <div class="aviso a" style="margin-top:0">
+      <b>Abrindo o formulário…</b><br><br>
+      Se esta mensagem não sair da tela em alguns segundos, o arquivo foi aberto em um
+      visualizador que não executa o formulário — é o que acontece ao tocar direto no
+      anexo do WhatsApp ou no gerenciador de arquivos.<br><br>
+      Salve o arquivo no celular e abra pelo <b>Chrome</b> (Android) ou <b>Safari</b> (iPhone):
+      no WhatsApp use <b>⋮ → Abrir com → Chrome</b>; no iPhone, salve em <b>Arquivos</b> e toque
+      em <b>Compartilhar → Safari</b>.
+    </div>
+  </div>
+  <noscript>
+    <div class="card"><div class="aviso e" style="margin-top:0">
+      <b>O JavaScript está desligado neste navegador.</b> O formulário precisa dele para funcionar.
+      Ative nas configurações do navegador ou abra o arquivo pelo Chrome ou Safari.
+    </div></div>
+  </noscript>
+</main>
+
+<footer>
+  <button class="btn" id="btnVoltar" disabled>← Voltar</button>
+  <button class="btn p nav" id="btnAvancar" disabled>Avançar →</button>
+</footer>
+
+<div class="ov" id="ov"><div class="md" id="mdBody"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==========================================================================
+   EnergizaCar — Formulário de Visita Técnica
+   Arquivo único, offline. Sem bibliotecas externas.
+   ========================================================================== */
+
+var APP = { versao: "2.0", chaveRasc: "ec_vt_rascunho", chaveHist: "ec_vt_historico" };
+
+/* ------------------------- listas (iguais às do painel) ------------------ */
+var TIPOS = ["Instalação Individual", "Instalação Coletiva", "Carregador DC"];
+var TECNICOS = ["Técnico 1", "Técnico 2", "Técnico 3", "A definir"];
+var RESULTADOS = ["Viável — seguir para orçamento","Viável com ressalvas","Necessita estudo de carga",
+  "Necessita projeto elétrico","Necessita retorno ao local","Inviável tecnicamente","Cliente ausente","Outro"];
+var FAB_WALLBOX = ["WEG","Intelbras","Tesla","BYD","ABB","Schneider Electric","Siemens","Wallbox","Zencar","Não definido"];
+var FAB_DC = ["ABB","Siemens","Tritium","BYD","WEG","Efacec","Kempower","Não definido"];
+var TENSOES = ["220 V monofásico","220 V trifásico","380 V trifásico","440 V trifásico","A verificar"];
+var CONECTORES = ["Tipo 2 (Mennekes)","Tipo 1 (J1772)","Tomada 2P+T 20 A","Tomada 2P+T 32 A","CCS2","GB/T","Outro"];
+
+var ORIGENS = [
+  { v:"Medidor do apartamento, na garagem", d:"Padrão CEMIG garagem — medidor da unidade dentro da garagem" },
+  { v:"Medidor do andar, no hall do pavimento", d:"Padrão CEMIG andar — derivação no hall do pavimento" },
+  { v:"Quadro geral / centro de medição do condomínio", d:"Alimentação pela área comum — exige medição individualizada" },
+  { v:"Padrão de entrada da casa", d:"Imóvel residencial com padrão próprio" }
+];
+var ORIGEM_CONDOMINIO = ORIGENS[2].v;
+
+var FOTOS = [
+  { k:"f1", t:"Quadro ou medidor de origem", d:"Aberto, mostrando o espaço disponível para o disjuntor" },
+  { k:"f2", t:"Identificação do medidor ou disjuntor geral", d:"Etiqueta / número da unidade legível" },
+  { k:"f3", t:"Percurso do eletroduto", d:"Vista geral do caminho até a vaga" },
+  { k:"f4", t:"Local previsto para o quadro de recarga", d:"Onde ficará o quadro exclusivo de recarga" },
+  { k:"f5", t:"Vaga", d:"Com o número da vaga visível" },
+  { k:"f6", t:"Laje ou viga dos furos", d:"Pontos onde serão feitos os furos de 40 mm" },
+  { k:"f7", t:"Padrão de entrada ou quadro geral", d:"Casa: padrão de entrada. Condomínio: quadro geral / centro de medição" },
+  { k:"f8", t:"Fotos livres", d:"O que o técnico achar relevante — pode tirar várias", multi:true }
+];
+
+/* ------------------------------- estado --------------------------------- */
+var D = {};        // campos
+var FT = {};       // fotos: { f1:"dataURL", f8:["dataURL", ...] }
+var passo = 0;     // índice na lista de etapas ativas
+var concluida = false;
+
+/* ------------------------------ utilidades ------------------------------ */
+function $(s, c){ return (c || document).querySelector(s); }
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function hojeISO(){ var n = new Date();
+  return n.getFullYear() + "-" + String(n.getMonth()+1).padStart(2,"0") + "-" + String(n.getDate()).padStart(2,"0"); }
+function agoraHM(){ var n = new Date();
+  return String(n.getHours()).padStart(2,"0") + ":" + String(n.getMinutes()).padStart(2,"0"); }
+function dataBR(iso){ if(!iso) return ""; var p = String(iso).split("-");
+  return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : iso; }
+function vazio(v){ return v === undefined || v === null || String(v).trim() === ""; }
+function toast(msg){
+  var t = $("#toast"); t.textContent = msg; t.classList.add("on");
+  clearTimeout(t._h); t._h = setTimeout(function(){ t.classList.remove("on"); }, 2200);
+}
+function opcoes(lista, sel){
+  return '<option value="">—</option>' + lista.map(function(o){
+    return '<option' + (o === sel ? " selected" : "") + '>' + esc(o) + "</option>"; }).join("");
+}
+
+/* --------------------------- armazenamento ------------------------------ */
+var BD = null, idbOk = true;
+function idb(){
+  return new Promise(function(res, rej){
+    if(BD) return res(BD);
+    if(!window.indexedDB){ idbOk = false; return rej(new Error("sem indexedDB")); }
+    /* Em file:// alguns navegadores nem respondem ao open — daí o prazo máximo. */
+    var pronto = false;
+    var prazo = setTimeout(function(){
+      if(pronto) return;
+      pronto = true; idbOk = false; rej(new Error("indexedDB não respondeu"));
+    }, 2000);
+    var r;
+    try { r = indexedDB.open("energizacar_visitas_campo", 1); }
+    catch(e){ clearTimeout(prazo); pronto = true; idbOk = false; return rej(e); }
+    r.onupgradeneeded = function(e){
+      var d = e.target.result;
+      if(!d.objectStoreNames.contains("fotos")) d.createObjectStore("fotos");
+      if(!d.objectStoreNames.contains("historico")) d.createObjectStore("historico", { keyPath:"uid" });
+    };
+    r.onsuccess = function(){ if(pronto) return; pronto = true; clearTimeout(prazo); BD = r.result; res(BD); };
+    r.onerror = r.onblocked = function(){
+      if(pronto) return; pronto = true; clearTimeout(prazo); idbOk = false; rej(r.error || new Error("bloqueado"));
+    };
+  });
+}
+function idbOp(loja, modo, fn){
+  return idb().then(function(d){
+    return new Promise(function(res, rej){
+      var t = d.transaction(loja, modo), s = t.objectStore(loja), rq = fn(s);
+      rq.onsuccess = function(){ res(rq.result); };
+      rq.onerror = function(){ rej(rq.error); };
+    });
+  });
+}
+/* Alguns navegadores bloqueiam IndexedDB quando o arquivo é aberto direto do
+   aparelho (file://). Nesses casos cai para localStorage e, em último caso,
+   mantém tudo em memória avisando o técnico. */
+var avisouArmazenamento = false;
+function avisaArmazenamento(){
+  if(avisouArmazenamento) return;
+  avisouArmazenamento = true;
+  toast("Atenção: este navegador não guarda as fotos. Conclua a visita sem fechar a aba.");
+}
+function lsSet(chave, valor){
+  try { localStorage.setItem(chave, JSON.stringify(valor)); return true; }
+  catch(e){ return false; }
+}
+function lsGet(chave){
+  try { var v = localStorage.getItem(chave); return v ? JSON.parse(v) : null; }
+  catch(e){ return null; }
+}
+
+function salvarFotos(){
+  if(idbOk){
+    return idbOp("fotos", "readwrite", function(s){ return s.put(FT, "rascunho"); })
+      .catch(function(){ idbOk = false; if(!lsSet("ec_vt_fotos", FT)) avisaArmazenamento(); });
+  }
+  if(!lsSet("ec_vt_fotos", FT)) avisaArmazenamento();
+  return Promise.resolve();
+}
+function lerFotos(){
+  if(!idbOk) return Promise.resolve(lsGet("ec_vt_fotos"));
+  return idbOp("fotos", "readonly", function(s){ return s.get("rascunho"); })
+    .catch(function(){ idbOk = false; return lsGet("ec_vt_fotos"); });
+}
+function gravarHistorico(reg){
+  if(idbOk){
+    return idbOp("historico", "readwrite", function(s){ return s.put(reg); })
+      .catch(function(){ idbOk = false; return gravarHistLS(reg); });
+  }
+  return Promise.resolve(gravarHistLS(reg));
+}
+function gravarHistLS(reg){
+  var l = lsGet(APP.chaveHist) || [];
+  var leve = { uid:reg.uid, id:reg.id, cliente:reg.cliente, tipo:reg.tipo,
+    quando:reg.quando, resumo:reg.resumo, json:reg.json };
+  l = l.filter(function(x){ return x.uid !== leve.uid; });
+  l.unshift(leve);
+  l = l.slice(0, 60);
+  lsSet(APP.chaveHist, l);
+}
+function lerHistorico(){
+  if(!idbOk) return Promise.resolve(lsGet(APP.chaveHist) || []);
+  return idbOp("historico", "readonly", function(s){ return s.getAll(); })
+    .catch(function(){ idbOk = false; return lsGet(APP.chaveHist) || []; });
+}
+
+function salvar(){
+  try { localStorage.setItem(APP.chaveRasc, JSON.stringify({ D:D, passo:passo, quando:new Date().toISOString() })); }
+  catch(e){ /* sem localStorage: segue em memória */ }
+}
+function limparRascunho(){
+  try { localStorage.removeItem(APP.chaveRasc); localStorage.removeItem("ec_vt_fotos"); } catch(e){}
+  if(idbOk) idbOp("fotos", "readwrite", function(s){ return s.delete("rascunho"); }).catch(function(){});
+}
+
+/* ============================== ETAPAS ================================== */
+function etapasAtivas(){
+  var s = ["ident", "realizada"];
+  if(D.realizada !== "Não"){
+    s.push("origem", "percurso", "ponto");
+    if(D.tipo === TIPOS[1]) s.push("coletiva");
+    if(D.tipo === TIPOS[2]) s.push("dc");
+    s.push("fotos");
+  }
+  s.push("fechamento", "fim");
+  return s;
+}
+var TITULOS = {
+  ident:"Identificação", realizada:"A visita foi realizada?", origem:"Origem da alimentação",
+  percurso:"Percurso e obra civil", ponto:"Ponto de recarga", coletiva:"Instalação coletiva",
+  dc:"Carregador DC", fotos:"Fotos da visita", fechamento:"Resultado e fechamento", fim:"Visita concluída"
+};
+
+/* Campos que travam o avanço (só o essencial da proposta) */
+var OBRIGA = { ident:["tipo"], origem:["origem"], percurso:["distancia"], fechamento:["resultado"] };
+
+/* Campos importantes para a proposta — geram aviso na tela final, não travam */
+var IMPORTANTES = [
+  ["id","ID da solicitação"], ["cliente","Cliente / condomínio"], ["endereco","Endereço"],
+  ["vaga","Vaga"], ["tecnico","Técnico responsável"],
+  ["ponto_derivacao","Localização do ponto de derivação"], ["tensao","Tensão no ponto de origem"],
+  ["fases","Número de fases"], ["espaco_quadro","Espaço livre no quadro de origem"],
+  ["disjuntor_a","Corrente do disjuntor a instalar"], ["aterramento","Aterramento existente"],
+  ["percurso","Tipo de percurso"], ["dificuldade","Grau de dificuldade"],
+  ["tipo_ponto","Tipo de ponto de recarga"], ["dr_classe_a","DR Classe A previsto"],
+  ["local_quadro","Local previsto para o quadro de recarga"],
+  ["necessitaOrcamento","Necessita orçamento"], ["prazo_dias","Prazo estimado de execução"]
+];
+
+/* ============================ RENDERIZAÇÃO ============================== */
+function cab(n, total, titulo, sub){
+  return '<div class="step-h"><div class="n">Etapa ' + n + " de " + total + '</div><h2>' +
+    esc(titulo) + "</h2>" + (sub ? "<p>" + sub + "</p>" : "") + "</div>";
+}
+function fld(k, rot, html, dica, opcional){
+  return '<div class="fld" data-f="' + k + '"><label class="lb">' + esc(rot) +
+    (opcional ? ' <span class="op">(opcional)</span>' : "") + "</label>" +
+    (dica ? '<div class="hint">' + dica + "</div>" : "") + html +
+    '<div class="err-msg" data-e="' + k + '">Preencha este campo para continuar.</div></div>';
+}
+function txt(k, ph){ return '<input type="text" data-k="' + k + '" value="' + esc(D[k] || "") + '" placeholder="' + esc(ph || "") + '">'; }
+function num(k, ph, dec){
+  return '<input type="number" inputmode="' + (dec ? "decimal" : "numeric") + '" step="' + (dec ? "any" : "1") +
+    '" data-k="' + k + '" value="' + esc(D[k] == null ? "" : D[k]) + '" placeholder="' + esc(ph || "") + '">';
+}
+function area(k, ph){ return '<textarea data-k="' + k + '" placeholder="' + esc(ph || "") + '">' + esc(D[k] || "") + "</textarea>"; }
+function sel(k, lista){ return '<select data-k="' + k + '">' + opcoes(lista, D[k]) + "</select>"; }
+function yn(k){
+  return '<div class="yn" data-opt="' + k + '">' +
+    '<button type="button" class="opt' + (D[k] === "Sim" ? " on" : "") + '" data-v="Sim">Sim</button>' +
+    '<button type="button" class="opt' + (D[k] === "Não" ? " on" : "") + '" data-v="Não">Não</button></div>';
+}
+function opts(k, lista, horiz){
+  return '<div class="opts' + (horiz ? " h" : "") + '" data-opt="' + k + '">' + lista.map(function(o){
+    var v = typeof o === "string" ? o : o.v, d = typeof o === "string" ? "" : o.d;
+    return '<button type="button" class="opt' + (D[k] === v ? " on" : "") + '" data-v="' + esc(v) + '">' +
+      esc(v) + (d ? "<small>" + esc(d) + "</small>" : "") + "</button>";
+  }).join("") + "</div>";
+}
+
+function telaIdent(n, t){
+  return cab(n, t, "Identificação", "Comece pelos dados da ordem de visita.") +
+    '<div class="card">' +
+    fld("id", "ID da solicitação", txt("id", "VIS-0007"), "Copie da ordem de serviço ou do painel.") +
+    fld("cliente", "Cliente / condomínio / empresa", txt("cliente", "Nome como está na ordem")) +
+    fld("endereco", "Endereço", txt("endereco", "Rua, número, bairro, cidade")) +
+    fld("vaga", "Vaga", txt("vaga", "Ex.: G1-42")) +
+    fld("tecnico", "Técnico responsável",
+      '<select data-k="tecnico_sel">' + opcoes(TECNICOS.concat(["Outro — digitar"]), TECNICOS.indexOf(D.tecnico) >= 0 ? D.tecnico : (D.tecnico ? "Outro — digitar" : "")) + "</select>" +
+      '<div style="margin-top:8px" class="' + (TECNICOS.indexOf(D.tecnico) >= 0 || !D.tecnico ? "hide" : "") + '" id="tecOutro">' +
+      '<input type="text" data-k="tecnico" value="' + esc(D.tecnico || "") + '" placeholder="Nome do técnico"></div>') +
+    '<div class="row2">' +
+      fld("dataVisita", "Data da visita", '<input type="date" data-k="dataVisita" value="' + esc(D.dataVisita || "") + '">') +
+      fld("horaVisita", "Hora", '<input type="time" data-k="horaVisita" value="' + esc(D.horaVisita || "") + '">') +
+    "</div></div>" +
+    '<div class="card">' + fld("tipo", "Tipo de visita", opts("tipo", TIPOS), "Define as etapas seguintes.") + "</div>";
+}
+
+function telaRealizada(n, t){
+  var h = cab(n, t, "A visita foi realizada?", "Se não foi, o formulário vai direto para o fechamento.") +
+    '<div class="card">' + fld("realizada", "Visita realizada", yn("realizada")) + "</div>";
+  if(D.realizada === "Não"){
+    h += '<div class="card">' +
+      fld("motivo", "Motivo", opts("motivo", ["Cliente ausente","Acesso negado","Endereço não localizado","Remarcada a pedido do cliente","Outro"])) +
+      fld("obsMotivo", "Observação", area("obsMotivo", "O que aconteceu no local")) + "</div>";
+  }
+  return h;
+}
+
+function telaOrigem(n, t){
+  var cond = D.origem === ORIGEM_CONDOMINIO;
+  var h = cab(n, t, "Origem da alimentação", "Este campo define o escopo técnico da proposta.") +
+    '<div class="card">' + fld("origem", "De onde sai o ramal alimentador", opts("origem", ORIGENS)) + "</div>" +
+    '<div class="card">' +
+      fld("ponto_derivacao", "Localização exata do ponto de derivação", txt("ponto_derivacao", "Ex.: hall do 3º pavimento, quadro à direita")) +
+      '<div class="row2">' +
+        fld("tensao", "Tensão no ponto de origem", sel("tensao", TENSOES)) +
+        fld("fases", "Número de fases", sel("fases", ["Monofásico","Bifásico","Trifásico"])) +
+      "</div>" +
+      fld("espaco_quadro", "Há espaço livre no quadro de origem para o disjuntor?", yn("espaco_quadro")) +
+      fld("disjuntor_a", "Corrente do disjuntor a instalar (A)", num("disjuntor_a", "Ex.: 40")) +
+      fld("aterramento", "Existe aterramento no local?", yn("aterramento")) +
+    "</div>" +
+    '<div class="card">' +
+      fld("medidor_kwh", "Necessita medidor de kWh no quadro de recarga?", yn("medidor_kwh")) +
+      (cond ? '<div class="aviso i"><b>Marcado Sim automaticamente.</b> A alimentação vem do quadro do condomínio, ' +
+        "ou seja, de energia da área comum. Sem medidor de kWh no quadro de recarga não há como ratear o consumo " +
+        "para o morador, e o condomínio pagaria a recarga na conta coletiva.</div>" : "") +
+    "</div>";
+  return h;
+}
+
+function telaPercurso(n, t){
+  return cab(n, t, "Percurso e obra civil", "Base do custo de material e de mão de obra.") +
+    '<div class="card">' +
+      fld("distancia", "Distância do ponto de derivação até a vaga (m)", num("distancia", "Ex.: 28", true),
+        "Meça pelo caminho real do eletroduto, não em linha reta.") +
+      fld("percurso", "Percurso", opts("percurso", ["Aparente","Embutido","Misto"], true)) +
+      '<div class="row2">' +
+        fld("furos_laje", "Furos em laje (40 mm)", num("furos_laje", "0")) +
+        fld("furos_viga", "Furos em viga (40 mm)", num("furos_viga", "0")) +
+      "</div>" +
+      fld("obstaculos", "Obstáculos no percurso", area("obstaculos", "Ex.: forro de gesso, tubulação hidráulica, junta de dilatação"), null, true) +
+    "</div>" +
+    '<div class="card">' +
+      fld("pedreiro", "Necessita serviço de pedreiro e pintura?", yn("pedreiro")) +
+      fld("andaime", "Necessita andaime ou escada especial?", yn("andaime")) +
+      fld("dificuldade", "Grau de dificuldade da execução", opts("dificuldade", ["Baixa","Média","Alta"], true)) +
+    "</div>";
+}
+
+function telaPonto(n, t){
+  var dc = D.tipo === TIPOS[2];
+  var h = cab(n, t, "Ponto de recarga", dc ? "Os dados do carregador DC ficam na etapa seguinte." : "O que será instalado na vaga.");
+  if(!dc){
+    h += '<div class="card">' +
+      fld("tipo_ponto", "Tipo de ponto", opts("tipo_ponto", ["Tomada","Wallbox"], true)) +
+      (D.tipo_ponto === "Wallbox" ?
+        fld("wallbox_por", "Wallbox fornecido por", opts("wallbox_por", ["Cliente","EnergizaCar"], true)) +
+        fld("fabricante", "Fabricante", sel("fabricante", FAB_WALLBOX)) +
+        fld("modelo", "Modelo", txt("modelo", "Ex.: EWS 711")) +
+        '<div class="row2">' +
+          fld("potencia_kw", "Potência (kW)", num("potencia_kw", "Ex.: 7,4", true)) +
+          fld("conector", "Tipo de conector", sel("conector", CONECTORES)) +
+        "</div>" : "") + "</div>";
+  }
+  h += '<div class="card">' +
+    fld("dr_classe_a", "DR Classe A previsto?", yn("dr_classe_a"),
+      "Exigência da NBR 17019 para ponto de recarga.") +
+    fld("local_quadro", "Local previsto para o quadro exclusivo de recarga", txt("local_quadro", "Ex.: parede ao lado da vaga, 1,5 m do piso")) +
+    "</div>";
+  return h;
+}
+
+function telaColetiva(n, t){
+  return cab(n, t, "Instalação coletiva", "Dados que definem a viabilidade do condomínio.") +
+    '<div class="card">' +
+      fld("col_carga", "Carga disponível no quadro geral", txt("col_carga", "Ex.: 120 A ou 75 kVA")) +
+      fld("col_demanda", "Demanda contratada do condomínio", txt("col_demanda", "Ex.: 66 kW")) +
+      fld("col_estudo", "Necessita estudo de carga?", yn("col_estudo")) +
+    "</div>" +
+    '<div class="card">' +
+      '<div class="row2">' +
+        fld("col_vagas1", "Vagas na 1ª etapa", num("col_vagas1", "Ex.: 12")) +
+        fld("col_vagasTot", "Potencial total de vagas", num("col_vagasTot", "Ex.: 160")) +
+      "</div>" +
+      fld("col_local", "Local previsto para o quadro coletivo de recarga", txt("col_local", "Ex.: casa de máquinas do subsolo")) +
+      fld("col_prumada", "Necessita prumada / bandeja / infraestrutura vertical?", yn("col_prumada")) +
+      (D.col_prumada === "Sim" ? fld("col_prumada_m", "Metragem da prumada / bandeja (m)", num("col_prumada_m", "Ex.: 45", true)) : "") +
+    "</div>" +
+    '<div class="card">' +
+      fld("col_gestao", "Sistema de gestão de carga previsto?", yn("col_gestao")) +
+      fld("col_medicao", "Como será feita a medição individualizada por vaga", area("col_medicao", "Ex.: medidor de kWh por vaga no quadro coletivo, leitura mensal pela administração")) +
+      fld("col_autorizacao", "Situação da autorização",
+        opts("col_autorizacao", ["Assembleia aprovada","Aguardando assembleia","Autorização do síndico","Não iniciada"])) +
+    "</div>";
+}
+
+function telaDC(n, t){
+  return cab(n, t, "Carregador DC", "Entrada de energia, obra civil e aprovação junto à CEMIG.") +
+    '<div class="card">' +
+      fld("dc_entrada", "Entrada de energia", opts("dc_entrada", ["Baixa tensão","Média tensão"], true)) +
+      fld("dc_trafo", "Transformador existente?", yn("dc_trafo")) +
+      (D.dc_trafo === "Sim" ? fld("dc_trafo_kva", "Potência do transformador (kVA)", num("dc_trafo_kva", "Ex.: 300", true)) : "") +
+      '<div class="row2">' +
+        fld("dc_dem_contratada", "Demanda contratada", txt("dc_dem_contratada", "Ex.: 150 kW")) +
+        fld("dc_dem_disponivel", "Demanda disponível", txt("dc_dem_disponivel", "Ex.: 40 kW")) +
+      "</div>" +
+      fld("dc_dist_qgbt", "Distância do QGBT ou transformador até o carregador (m)", num("dc_dist_qgbt", "Ex.: 35", true)) +
+    "</div>" +
+    '<div class="card">' +
+      '<div class="row2">' +
+        fld("dc_qtd", "Número de carregadores", num("dc_qtd", "Ex.: 2")) +
+        fld("dc_pot", "Potência de cada (kW)", num("dc_pot", "Ex.: 60", true)) +
+      "</div>" +
+      '<div class="aviso i' + (potenciaTotalDC() == null ? " hide" : "") + '" id="dcTotalBox">Potência total prevista: <b id="dcTotalVal">' +
+        (potenciaTotalDC() == null ? "" : String(potenciaTotalDC()).replace(".", ",")) + " kW</b></div>" +
+      '<div style="height:12px"></div>' +
+      fld("dc_fabricante", "Fabricante", sel("dc_fabricante", FAB_DC)) +
+      fld("dc_modelo", "Modelo", txt("dc_modelo", "Ex.: DC Wallbox 30"), null, true) +
+    "</div>" +
+    '<div class="card">' +
+      fld("dc_obra", "Necessita obra civil (base de concreto, canaleta, sinalização)?", yn("dc_obra")) +
+      fld("dc_area", "Área disponível e espaço de manobra do veículo", area("dc_area", "Ex.: 6 x 3 m, manobra livre pela lateral")) +
+      fld("dc_cemig", "Necessita aprovação junto à CEMIG?", yn("dc_cemig")) +
+      fld("dc_abrigo", "Instalação", opts("dc_abrigo", ["Abrigada","Exposta ao tempo"], true)) +
+    "</div>";
+}
+
+function telaFotos(n, t){
+  var feitas = FOTOS.filter(function(f){ return f.multi ? (FT[f.k] || []).length > 0 : !!FT[f.k]; }).length;
+  var h = cab(n, t, "Fotos da visita",
+    'Tire uma de cada. <span class="cont" id="contFotos">' + feitas + " de " + FOTOS.length + " itens</span>");
+  FOTOS.forEach(function(f, i){
+    var tem = f.multi ? (FT[f.k] || []).length > 0 : !!FT[f.k];
+    var lista = f.multi ? (FT[f.k] || []) : (FT[f.k] ? [FT[f.k]] : []);
+    h += '<div class="foto' + (tem ? " done" : "") + '" data-foto="' + f.k + '">' +
+      '<div class="ft"><span class="num">' + (tem ? "✓" : (i + 1)) + "</span><span>" + esc(f.t) + "</span></div>" +
+      '<div class="fd">' + esc(f.d) + "</div>" +
+      (lista.length ? '<div class="tira">' + lista.map(function(src, j){
+        return '<div class="th"><img src="' + src + '" alt=""><button type="button" data-del="' + f.k + '" data-i="' + j + '">×</button></div>';
+      }).join("") + "</div>" : "") +
+      '<div class="fa">' +
+        '<button type="button" class="btn g" data-cam="' + f.k + '">' + (tem ? (f.multi ? "+ Adicionar foto" : "Refazer foto") : "Tirar foto") + "</button>" +
+        (f.multi || !tem ? "" : "") +
+      "</div>" +
+      '<input type="file" accept="image/*" capture="environment"' + (f.multi ? " multiple" : "") +
+        ' class="hide" data-file="' + f.k + '"></div>';
+  });
+  h += '<div class="aviso a">Dá para concluir sem todas as fotos — o que faltar aparece listado na tela final.</div>';
+  return h;
+}
+
+function telaFechamento(n, t){
+  var nao = D.realizada === "Não";
+  return cab(n, t, "Resultado e fechamento", "Última etapa antes de gerar o envio.") +
+    '<div class="card">' + fld("resultado", "Resultado da visita", opts("resultado", RESULTADOS)) + "</div>" +
+    (nao ? "" :
+    '<div class="card">' +
+      fld("necessitaOrcamento", "Necessita orçamento?", yn("necessitaOrcamento")) +
+      fld("necessitaProjeto", "Necessita projeto?", yn("necessitaProjeto")) +
+      fld("necessitaRetorno", "Necessita retorno ao local?", yn("necessitaRetorno")) +
+      fld("prazo_dias", "Prazo estimado de execução (dias)", num("prazo_dias", "Ex.: 3")) +
+    "</div>") +
+    '<div class="card">' + fld("obsTecnico", "Observações do técnico", area("obsTecnico", "O que o escritório precisa saber e não coube nos campos acima")) + "</div>";
+}
+
+/* ------------------------------- tela final ----------------------------- */
+function pendencias(){
+  var p = [];
+  if(D.realizada === "Não") return p;
+  IMPORTANTES.forEach(function(par){
+    if(par[0] === "tipo_ponto" && D.tipo === TIPOS[2]) return;
+    if(vazio(D[par[0]])) p.push(par[1]);
+  });
+  if(D.tipo === TIPOS[1]){
+    [["col_carga","Carga disponível no quadro geral"],["col_demanda","Demanda contratada"],
+     ["col_vagas1","Vagas na 1ª etapa"],["col_autorizacao","Situação da autorização"]].forEach(function(x){
+      if(vazio(D[x[0]])) p.push(x[1]); });
+  }
+  if(D.tipo === TIPOS[2]){
+    [["dc_entrada","Entrada de energia"],["dc_qtd","Número de carregadores"],
+     ["dc_pot","Potência de cada carregador"],["dc_dist_qgbt","Distância do QGBT até o carregador"],
+     ["dc_cemig","Aprovação junto à CEMIG"]].forEach(function(x){
+      if(vazio(D[x[0]])) p.push(x[1]); });
+  }
+  return p;
+}
+function fotosFaltando(){
+  if(D.realizada === "Não") return [];
+  return FOTOS.filter(function(f){
+    return f.multi ? false : !FT[f.k];
+  }).map(function(f){ return f.t; });
+}
+function totalFotos(){
+  var n = 0;
+  FOTOS.forEach(function(f){ n += f.multi ? (FT[f.k] || []).length : (FT[f.k] ? 1 : 0); });
+  return n;
+}
+
+function telaFim(n, t){
+  var pend = pendencias(), ff = fotosFaltando();
+  var h = cab(n, t, "Visita concluída", "Envie o resumo agora, ainda no local.");
+
+  if(pend.length || ff.length){
+    h += '<div class="card"><div class="sec-t">Ficou faltando</div>';
+    if(pend.length){
+      h += '<div class="aviso a" style="margin-top:6px"><b>' + pend.length +
+        (pend.length === 1 ? " campo importante" : " campos importantes") + " para a proposta:</b><br>" +
+        pend.map(function(x){ return "• " + esc(x); }).join("<br>") + "</div>";
+    }
+    if(ff.length){
+      h += '<div class="aviso a"><b>' + ff.length + (ff.length === 1 ? " foto" : " fotos") + " sem registro:</b><br>" +
+        ff.map(function(x){ return "• " + esc(x); }).join("<br>") + "</div>";
+    }
+    h += '<div class="hint" style="margin:10px 0 0">Dá para voltar e completar, ou enviar assim mesmo.</div></div>';
+  } else {
+    h += '<div class="card"><div class="aviso i" style="margin-top:0"><b>Levantamento completo.</b> ' +
+      "Todos os campos essenciais da proposta e todas as fotos foram preenchidos.</div></div>";
+  }
+
+  h += '<div class="card"><div class="sec-t">Resumo para o WhatsApp</div>' +
+    '<div class="hint">Envie para o escritório. É este texto que vira a proposta.</div>' +
+    '<pre class="out resumo" id="preResumo">' + esc(resumoTexto()) + "</pre>" +
+    '<div class="acts">' +
+      '<button class="btn p" id="btnCompartilhar">Compartilhar</button>' +
+      '<button class="btn g" id="btnCopiarResumo">Copiar resumo</button>' +
+      '<button class="btn" id="btnBaixarResumo">Baixar .txt</button>' +
+      '<button class="btn" id="btnBaixarFotos">Baixar fotos (' + totalFotos() + ")</button>" +
+    "</div></div>";
+
+  h += '<div class="card"><div class="sec-t">Dados para o painel <span class="tag">JSON</span></div>' +
+    '<div class="hint">Cole no Painel de Visitas da EnergizaCar. O ID da solicitação vai junto.</div>' +
+    '<pre class="out" id="preJson">' + esc(jsonTexto()) + "</pre>" +
+    '<div class="acts"><button class="btn s" id="btnCopiarJson">Copiar JSON</button>' +
+    '<button class="btn" id="btnBaixarJson">Baixar .json</button></div></div>';
+
+  h += '<div class="card"><div class="sec-t">Depois de enviar</div>' +
+    '<div class="hint" style="margin-bottom:10px">A visita fica guardada no aparelho, dá para reenviar depois pelo botão Histórico.</div>' +
+    '<button class="btn p full" id="btnNovaFim">Começar nova visita</button></div>';
+  return h;
+}
+
+/* ----------------------------- saídas de texto -------------------------- */
+function ln(rot, val, un){
+  if(vazio(val)) return "";
+  var s = String(val);
+  if(/^-?\d+\.\d+$/.test(s)) s = s.replace(".", ",");   /* decimal no padrão brasileiro */
+  return rot + ": " + s + (un ? " " + un : "") + "\n";
+}
+function resumoTexto(){
+  var s = "";
+  s += "*VISITA TÉCNICA — ENERGIZACAR*\n";
+  s += (D.id ? "*" + D.id + "*" : "(sem ID)") + " · " + (D.tipo || "tipo não informado") + "\n";
+  s += "----------------------------------\n";
+  s += ln("Cliente", D.cliente);
+  s += ln("Endereço", D.endereco);
+  s += ln("Vaga", D.vaga);
+  s += ln("Técnico", D.tecnico);
+  s += ln("Data", dataBR(D.dataVisita) + (D.horaVisita ? " às " + D.horaVisita : ""));
+  s += "\n";
+
+  if(D.realizada === "Não"){
+    s += "*VISITA NÃO REALIZADA*\n";
+    s += ln("Motivo", D.motivo);
+    s += ln("Observação", D.obsMotivo);
+    s += "\n*RESULTADO*\n" + ln("Resultado", D.resultado);
+    s += "\n_Enviado pelo formulário de campo EnergizaCar_";
+    return s;
+  }
+
+  s += "*ORIGEM DA ALIMENTAÇÃO*\n";
+  s += ln("Origem", D.origem);
+  s += ln("Ponto de derivação", D.ponto_derivacao);
+  s += ln("Tensão", D.tensao);
+  s += ln("Fases", D.fases);
+  s += ln("Espaço livre no quadro", D.espaco_quadro);
+  s += ln("Disjuntor a instalar", D.disjuntor_a, "A");
+  s += ln("Aterramento existente", D.aterramento);
+  s += ln("Medidor de kWh no quadro de recarga", D.medidor_kwh);
+  s += "\n*PERCURSO E OBRA CIVIL*\n";
+  s += ln("Distância até a vaga", D.distancia, "m");
+  s += ln("Percurso", D.percurso);
+  s += ln("Furos em laje (40 mm)", D.furos_laje);
+  s += ln("Furos em viga (40 mm)", D.furos_viga);
+  s += ln("Obstáculos", D.obstaculos);
+  s += ln("Pedreiro e pintura", D.pedreiro);
+  s += ln("Andaime ou escada especial", D.andaime);
+  s += ln("Grau de dificuldade", D.dificuldade);
+
+  s += "\n*PONTO DE RECARGA*\n";
+  s += ln("Tipo de ponto", D.tipo_ponto);
+  s += ln("Wallbox fornecido por", D.wallbox_por);
+  s += ln("Fabricante", D.fabricante);
+  s += ln("Modelo", D.modelo);
+  s += ln("Potência", D.potencia_kw, "kW");
+  s += ln("Conector", D.conector);
+  s += ln("DR Classe A", D.dr_classe_a);
+  s += ln("Local do quadro de recarga", D.local_quadro);
+
+  if(D.tipo === TIPOS[1]){
+    s += "\n*INSTALAÇÃO COLETIVA*\n";
+    s += ln("Carga disponível no quadro geral", D.col_carga);
+    s += ln("Demanda contratada", D.col_demanda);
+    s += ln("Necessita estudo de carga", D.col_estudo);
+    s += ln("Vagas na 1ª etapa", D.col_vagas1);
+    s += ln("Potencial total de vagas", D.col_vagasTot);
+    s += ln("Local do quadro coletivo", D.col_local);
+    s += ln("Prumada / bandeja", D.col_prumada);
+    s += ln("Metragem da prumada", D.col_prumada_m, "m");
+    s += ln("Gestão de carga", D.col_gestao);
+    s += ln("Medição individualizada", D.col_medicao);
+    s += ln("Autorização", D.col_autorizacao);
+  }
+  if(D.tipo === TIPOS[2]){
+    s += "\n*CARREGADOR DC*\n";
+    s += ln("Entrada de energia", D.dc_entrada);
+    s += ln("Transformador existente", D.dc_trafo);
+    s += ln("Potência do transformador", D.dc_trafo_kva, "kVA");
+    s += ln("Demanda contratada", D.dc_dem_contratada);
+    s += ln("Demanda disponível", D.dc_dem_disponivel);
+    s += ln("Distância do QGBT ao carregador", D.dc_dist_qgbt, "m");
+    s += ln("Carregadores", D.dc_qtd);
+    s += ln("Potência de cada", D.dc_pot, "kW");
+    var tt = potenciaTotalDC();
+    s += ln("Potência total", tt == null ? "" : String(tt).replace(".", ","), "kW");
+    s += ln("Fabricante", D.dc_fabricante);
+    s += ln("Modelo", D.dc_modelo);
+    s += ln("Obra civil", D.dc_obra);
+    s += ln("Área e manobra", D.dc_area);
+    s += ln("Aprovação CEMIG", D.dc_cemig);
+    s += ln("Instalação", D.dc_abrigo);
+  }
+
+  s += "\n*RESULTADO*\n";
+  s += ln("Resultado", D.resultado);
+  s += ln("Necessita orçamento", D.necessitaOrcamento);
+  s += ln("Necessita projeto", D.necessitaProjeto);
+  s += ln("Necessita retorno ao local", D.necessitaRetorno);
+  s += ln("Prazo estimado de execução", D.prazo_dias, "dias");
+  s += ln("Observações", D.obsTecnico);
+
+  s += "\n*FOTOS*: " + totalFotos() + " anexada(s)\n";
+  var ff = fotosFaltando();
+  if(ff.length) s += "Faltando: " + ff.join("; ") + "\n";
+  var pend = pendencias();
+  if(pend.length) s += "\n*CAMPOS EM BRANCO*: " + pend.join("; ") + "\n";
+
+  s += "\n_Enviado pelo formulário de campo EnergizaCar_";
+  return s;
+}
+
+function potenciaTotalDC(){
+  var q = parseFloat(String(D.dc_qtd || "").replace(",", ".")),
+      p = parseFloat(String(D.dc_pot || "").replace(",", "."));
+  return (isFinite(q) && isFinite(p)) ? Math.round(q * p * 100) / 100 : null;
+}
+function nn(v){ return vazio(v) ? "" : v; }
+
+function statusSugerido(){
+  if(D.realizada === "Não") return "Aguardando agendamento";
+  if(D.resultado === "Inviável tecnicamente") return "Cancelada";
+  if(D.necessitaOrcamento === "Sim") return "Proposta em andamento";
+  return "Visita realizada";
+}
+
+function objeto(){
+  var o = {
+    id: nn(D.id),
+    cliente: nn(D.cliente),
+    endereco: nn(D.endereco),
+    tipo: nn(D.tipo),
+    tecnico: nn(D.tecnico),
+    real: {
+      realizada: nn(D.realizada) || "Sim",
+      dataVisita: nn(D.dataVisita),
+      horaVisita: nn(D.horaVisita),
+      tecnicoExec: nn(D.tecnico),
+      resultado: nn(D.resultado),
+      necessitaOrcamento: nn(D.necessitaOrcamento),
+      necessitaProjeto: nn(D.necessitaProjeto),
+      necessitaRetorno: nn(D.necessitaRetorno),
+      status: statusSugerido(),
+      obsTecnico: nn(D.obsTecnico)
+    },
+    vt: {
+      versaoFormulario: APP.versao,
+      preenchidoEm: new Date().toISOString(),
+      vaga: nn(D.vaga),
+      motivoNaoRealizada: nn(D.motivo),
+      obsMotivo: nn(D.obsMotivo),
+      origem: nn(D.origem),
+      pontoDerivacao: nn(D.ponto_derivacao),
+      tensao: nn(D.tensao),
+      fases: nn(D.fases),
+      espacoNoQuadro: nn(D.espaco_quadro),
+      disjuntorA: nn(D.disjuntor_a),
+      aterramento: nn(D.aterramento),
+      medidorKwh: nn(D.medidor_kwh),
+      distanciaM: nn(D.distancia),
+      percurso: nn(D.percurso),
+      furosLaje: nn(D.furos_laje),
+      furosViga: nn(D.furos_viga),
+      obstaculos: nn(D.obstaculos),
+      pedreiroPintura: nn(D.pedreiro),
+      andaime: nn(D.andaime),
+      dificuldade: nn(D.dificuldade),
+      tipoPonto: nn(D.tipo_ponto),
+      wallboxFornecidoPor: nn(D.wallbox_por),
+      drClasseA: nn(D.dr_classe_a),
+      localQuadroRecarga: nn(D.local_quadro),
+      prazoDias: nn(D.prazo_dias),
+      fotos: totalFotos(),
+      fotosFaltando: fotosFaltando(),
+      camposEmBranco: pendencias()
+    },
+    ind: {
+      fabWallbox: nn(D.fabricante),
+      modWallbox: nn(D.modelo),
+      potWallbox: nn(D.potencia_kw),
+      vaga: nn(D.vaga)
+    }
+  };
+  if(D.tipo === TIPOS[1]){
+    o.col = { vagas: nn(D.col_vagasTot) };
+    o.vt.coletiva = {
+      cargaQuadroGeral: nn(D.col_carga),
+      demandaContratada: nn(D.col_demanda),
+      estudoDeCarga: nn(D.col_estudo),
+      vagas1aEtapa: nn(D.col_vagas1),
+      potencialTotalVagas: nn(D.col_vagasTot),
+      localQuadroColetivo: nn(D.col_local),
+      prumada: nn(D.col_prumada),
+      prumadaMetros: nn(D.col_prumada_m),
+      gestaoDeCarga: nn(D.col_gestao),
+      medicaoIndividualizada: nn(D.col_medicao),
+      autorizacao: nn(D.col_autorizacao)
+    };
+  }
+  if(D.tipo === TIPOS[2]){
+    var tt = potenciaTotalDC();
+    o.dc = {
+      numCarregadores: nn(D.dc_qtd),
+      potenciaCada: nn(D.dc_pot),
+      potenciaTotal: tt == null ? "" : tt,
+      fabricante: nn(D.dc_fabricante),
+      modelo: nn(D.dc_modelo),
+      tensao: nn(D.tensao)
+    };
+    o.vt.carregadorDC = {
+      entradaEnergia: nn(D.dc_entrada),
+      transformadorExistente: nn(D.dc_trafo),
+      transformadorKva: nn(D.dc_trafo_kva),
+      demandaContratada: nn(D.dc_dem_contratada),
+      demandaDisponivel: nn(D.dc_dem_disponivel),
+      distanciaQgbtM: nn(D.dc_dist_qgbt),
+      obraCivil: nn(D.dc_obra),
+      areaEManobra: nn(D.dc_area),
+      aprovacaoCemig: nn(D.dc_cemig),
+      instalacao: nn(D.dc_abrigo)
+    };
+  }
+  return o;
+}
+function jsonTexto(){ return JSON.stringify(objeto(), null, 1); }
+
+/* ------------------------------ navegação ------------------------------- */
+function render(manterScroll){
+  var y = window.scrollY || 0;
+  var lista = etapasAtivas();
+  if(passo >= lista.length) passo = lista.length - 1;
+  if(passo < 0) passo = 0;
+  var id = lista[passo], n = passo + 1, t = lista.length;
+  var m = $("#main");
+  var telas = { ident:telaIdent, realizada:telaRealizada, origem:telaOrigem, percurso:telaPercurso,
+    ponto:telaPonto, coletiva:telaColetiva, dc:telaDC, fotos:telaFotos, fechamento:telaFechamento, fim:telaFim };
+  m.innerHTML = telas[id](n, t);
+  window.scrollTo(0, manterScroll ? y : 0);
+
+  $("#progBar").style.width = Math.round((passo / (t - 1)) * 100) + "%";
+  $("#hsub").textContent = (D.id ? D.id + " · " : "") + (TITULOS[id] || "");
+
+  $("#btnVoltar").disabled = passo === 0;
+  $("#btnHist").disabled = false;
+  $("#btnNova").disabled = false;
+  var av = $("#btnAvancar");
+  av.disabled = false;
+  if(id === "fim"){ av.textContent = "Salvar no histórico"; av.classList.remove("p"); av.classList.add("s"); }
+  else if(lista[passo + 1] === "fim"){ av.textContent = "Concluir →"; av.classList.add("p"); av.classList.remove("s"); }
+  else { av.textContent = "Avançar →"; av.classList.add("p"); av.classList.remove("s"); }
+
+  ligarOpcoes();
+  if(id === "fim") ligarFim();
+  if(id === "fotos") ligarFotos();
+}
+
+function validarEtapa(){
+  var id = etapasAtivas()[passo], req = OBRIGA[id] || [], falta = null;
+  req.forEach(function(k){
+    var el = document.querySelector('[data-f="' + k + '"]');
+    var msg = document.querySelector('[data-e="' + k + '"]');
+    if(vazio(D[k])){
+      if(!falta) falta = el;
+      if(msg) msg.classList.add("on");
+      if(el){
+        var c = el.querySelector("input,select,textarea");
+        if(c) c.classList.add("err-fld");
+        var o = el.querySelector(".opts,.yn");
+        if(o) o.style.outline = "2px solid var(--vm)";
+      }
+    } else {
+      if(msg) msg.classList.remove("on");
+    }
+  });
+  if(falta){
+    falta.scrollIntoView({ behavior:"smooth", block:"center" });
+    toast("Falta preencher para avançar.");
+    return false;
+  }
+  return true;
+}
+
+function avancar(){
+  var lista = etapasAtivas();
+  if(lista[passo] === "fim"){ concluir(); return; }
+  if(!validarEtapa()) return;
+  passo++; salvar(); render();
+}
+function voltar(){ if(passo > 0){ passo--; salvar(); render(); } }
+
+/* ------------------------- entrada de dados ----------------------------- */
+document.addEventListener("input", function(e){
+  var el = e.target, k = el.getAttribute && el.getAttribute("data-k");
+  if(!k) return;
+  D[k] = el.value;
+  if(k === "id") $("#hsub").textContent = (D.id ? D.id + " · " : "") + (TITULOS[etapasAtivas()[passo]] || "");
+  if(k === "dc_qtd" || k === "dc_pot") atualizaDCTotal();
+  salvar();
+});
+
+/* Atualiza a potência total do DC sem redesenhar a tela — redesenhar aqui
+   faria o técnico perder o campo em que está digitando. */
+function atualizaDCTotal(){
+  var box = $("#dcTotalBox"); if(!box) return;
+  var tot = potenciaTotalDC();
+  if(tot == null){ box.classList.add("hide"); return; }
+  box.classList.remove("hide");
+  $("#dcTotalVal").textContent = String(tot).replace(".", ",") + " kW";
+}
+document.addEventListener("change", function(e){
+  var el = e.target, k = el.getAttribute && el.getAttribute("data-k");
+  if(!k) return;
+  D[k] = el.value;
+  if(k === "tecnico_sel"){
+    if(el.value === "Outro — digitar"){ D.tecnico = D.tecnico && TECNICOS.indexOf(D.tecnico) < 0 ? D.tecnico : ""; }
+    else { D.tecnico = el.value; }
+    salvar(); render(true); return;
+  }
+  salvar();
+  if(k === "dc_qtd" || k === "dc_pot") atualizaDCTotal();
+});
+
+/* opções que mudam a estrutura da tela e por isso exigem redesenho */
+var ESTRUTURAIS = ["tipo", "realizada", "origem", "tipo_ponto", "col_prumada", "dc_trafo"];
+
+/* Cada botão recebe o seu próprio onclick a cada desenho de tela. É mais
+   compatível com WebView de celular do que delegação no documento. */
+function ligarOpcoes(){
+  Array.prototype.forEach.call(document.querySelectorAll("[data-opt] [data-v]"), function(b){
+    b.onclick = function(){
+      var g = b.parentNode, k = g.getAttribute("data-opt"), v = b.getAttribute("data-v");
+      D[k] = (D[k] === v && k !== "realizada" && k !== "tipo") ? "" : v;
+      if(k === "origem" && v === ORIGEM_CONDOMINIO) D.medidor_kwh = "Sim";
+      salvar();
+      if(ESTRUTURAIS.indexOf(k) >= 0){ render(true); return; }
+      Array.prototype.forEach.call(g.querySelectorAll("[data-v]"), function(x){
+        if(x.getAttribute("data-v") === D[k]) x.className = "opt on"; else x.className = "opt";
+      });
+      g.style.outline = "";
+      var msg = document.querySelector('[data-e="' + k + '"]');
+      if(msg) msg.className = "err-msg";
+    };
+  });
+}
+
+$("#btnAvancar").onclick = avancar;
+$("#btnVoltar").onclick = voltar;
+
+/* ------------------------------- fotos ---------------------------------- */
+function comprimir(file){
+  return new Promise(function(res, rej){
+    var fr = new FileReader();
+    fr.onerror = function(){ rej(new Error("leitura")); };
+    fr.onload = function(){
+      var im = new Image();
+      im.onerror = function(){ rej(new Error("imagem")); };
+      im.onload = function(){
+        var w = im.naturalWidth || im.width, h = im.naturalHeight || im.height, M = 1200;
+        if(w > h && w > M){ h = Math.round(h * M / w); w = M; }
+        else if(h >= w && h > M){ w = Math.round(w * M / h); h = M; }
+        var c = document.createElement("canvas");
+        c.width = w; c.height = h;
+        var cx = c.getContext("2d");
+        cx.fillStyle = "#fff"; cx.fillRect(0, 0, w, h);
+        cx.drawImage(im, 0, 0, w, h);
+        res(c.toDataURL("image/jpeg", 0.7));
+      };
+      im.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  });
+}
+function ligarFotos(){
+  Array.prototype.forEach.call(document.querySelectorAll("[data-cam]"), function(b){
+    b.onclick = function(){
+      var k = b.getAttribute("data-cam");
+      var inp = document.querySelector('[data-file="' + k + '"]');
+      inp.value = ""; inp.click();
+    };
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-file]"), function(inp){
+    inp.onchange = function(){
+      var k = inp.getAttribute("data-file"), fs = Array.prototype.slice.call(inp.files || []);
+      if(!fs.length) return;
+      var multi = FOTOS.filter(function(f){ return f.k === k; })[0].multi;
+      toast("Processando foto…");
+      Promise.all(fs.map(comprimir)).then(function(arr){
+        if(multi){ FT[k] = (FT[k] || []).concat(arr); }
+        else { FT[k] = arr[0]; }
+        return salvarFotos();
+      }).then(function(){ render(true); toast("Foto salva."); })
+        .catch(function(){ toast("Não consegui ler a imagem."); });
+    };
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-del]"), function(b){
+    b.onclick = function(){
+      var k = b.getAttribute("data-del"), i = parseInt(b.getAttribute("data-i"), 10);
+      var multi = FOTOS.filter(function(f){ return f.k === k; })[0].multi;
+      if(multi){ (FT[k] || []).splice(i, 1); if(!FT[k].length) delete FT[k]; }
+      else { delete FT[k]; }
+      salvarFotos().then(function(){ render(true); });
+    };
+  });
+}
+
+/* --------------------------- ações da tela final ------------------------ */
+function copiar(txt){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){ toast("Copiado."); }).catch(function(){ copiaVelha(txt); });
+  } else copiaVelha(txt);
+}
+function copiaVelha(txt){
+  var ta = document.createElement("textarea");
+  ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); toast("Copiado."); }
+  catch(e){ toast("Selecione o texto e copie manualmente."); }
+  document.body.removeChild(ta);
+}
+function baixar(nome, conteudo, mime){
+  var b = new Blob([conteudo], { type: mime || "text/plain;charset=utf-8" });
+  var u = URL.createObjectURL(b), a = document.createElement("a");
+  a.href = u; a.download = nome; document.body.appendChild(a); a.click();
+  setTimeout(function(){ URL.revokeObjectURL(u); a.remove(); }, 1500);
+}
+function dataURLparaFile(du, nome){
+  var p = du.split(","), m = /:(.*?);/.exec(p[0])[1], bs = atob(p[1]);
+  var n = bs.length, u8 = new Uint8Array(n);
+  while(n--) u8[n] = bs.charCodeAt(n);
+  return new File([u8], nome, { type:m });
+}
+function arquivosFotos(){
+  var out = [], base = (D.id || "visita").replace(/[^\w-]/g, "");
+  FOTOS.forEach(function(f, i){
+    if(f.multi){ (FT[f.k] || []).forEach(function(du, j){ out.push(dataURLparaFile(du, base + "_" + (i+1) + "_livre_" + (j+1) + ".jpg")); }); }
+    else if(FT[f.k]){ out.push(dataURLparaFile(FT[f.k], base + "_" + (i+1) + ".jpg")); }
+  });
+  return out;
+}
+function ligarFim(){
+  $("#btnCopiarResumo").onclick = function(){ copiar(resumoTexto()); };
+  $("#btnCopiarJson").onclick = function(){ copiar(jsonTexto()); };
+  $("#btnBaixarResumo").onclick = function(){ baixar("visita_" + (D.id || "sem_id") + ".txt", resumoTexto()); };
+  $("#btnBaixarJson").onclick = function(){ baixar("visita_" + (D.id || "sem_id") + ".json", jsonTexto(), "application/json"); };
+  $("#btnBaixarFotos").onclick = function(){
+    var fs = arquivosFotos();
+    if(!fs.length){ toast("Nenhuma foto para baixar."); return; }
+    fs.forEach(function(f, i){ setTimeout(function(){ baixar(f.name, f, f.type); }, i * 350); });
+    toast("Baixando " + fs.length + " foto(s).");
+  };
+  $("#btnNovaFim").onclick = function(){ pedirNova(); };
+  $("#btnCompartilhar").onclick = function(){
+    var txt = resumoTexto(), fs = arquivosFotos();
+    var titulo = "Visita técnica " + (D.id || "");
+    if(navigator.share && fs.length && navigator.canShare && navigator.canShare({ files: fs })){
+      navigator.share({ title: titulo, text: txt, files: fs }).catch(function(){});
+    } else if(navigator.share){
+      navigator.share({ title: titulo, text: txt }).then(function(){
+        if(fs.length) toast("Resumo enviado. As fotos vão pelo botão Baixar fotos.");
+      }).catch(function(){});
+    } else {
+      copiar(txt);
+      toast("Compartilhamento não disponível — resumo copiado.");
+    }
+  };
+}
+
+/* ------------------------------ conclusão ------------------------------- */
+function concluir(){
+  var reg = {
+    uid: (D.id || "sem-id") + "-" + Date.now(),
+    id: D.id || "", cliente: D.cliente || "", tipo: D.tipo || "",
+    quando: new Date().toISOString(),
+    resumo: resumoTexto(), json: objeto(), D: JSON.parse(JSON.stringify(D)), FT: FT
+  };
+  gravarHistorico(reg).then(function(){
+    concluida = true;
+    toast("Visita salva no histórico do aparelho.");
+  });
+}
+
+/* ------------------------------- histórico ------------------------------ */
+function modal(html){
+  $("#mdBody").innerHTML = html;
+  $("#ov").classList.add("on");
+}
+function fecharModal(){ $("#ov").classList.remove("on"); }
+$("#ov").addEventListener("click", function(e){ if(e.target === $("#ov")) fecharModal(); });
+
+$("#btnHist").onclick = function(){
+  lerHistorico().then(function(l){
+    l = (l || []).sort(function(a, b){ return b.quando < a.quando ? -1 : 1; });
+    var h = "<h3>Histórico neste aparelho</h3><p>" + l.length + " visita(s) concluída(s).</p>";
+    if(!l.length) h += '<div class="aviso i">Nenhuma visita concluída ainda.</div>';
+    l.forEach(function(r){
+      var d = new Date(r.quando);
+      h += '<div class="hist"><b>' + esc(r.id || "sem ID") + " — " + esc(r.cliente || "sem cliente") + "</b>" +
+        '<div class="m">' + esc(r.tipo || "") + " · " + d.toLocaleDateString("pt-BR") + " " +
+        d.toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" }) + "</div>" +
+        '<div class="acts"><button class="btn g" data-hres="' + esc(r.uid) + '">Copiar resumo</button>' +
+        '<button class="btn" data-hjson="' + esc(r.uid) + '">Copiar JSON</button></div></div>';
+    });
+    var lsOk = false;
+    try { localStorage.setItem("ec_vt_teste", "1"); localStorage.removeItem("ec_vt_teste"); lsOk = true; } catch(e){}
+    h += '<div class="aviso ' + (idbOk || lsOk ? "i" : "a") + '"><b>Armazenamento neste navegador:</b> ' +
+      (idbOk ? "IndexedDB (completo, com fotos)" : (lsOk ? "somente armazenamento local — histórico sem fotos" :
+      "somente memória — conclua a visita sem fechar a aba")) + "<br>Versão do formulário: " + APP.versao + "</div>";
+    h += '<div style="height:8px"></div><button class="btn full" id="btnFechaHist">Fechar</button>';
+    modal(h);
+    $("#btnFechaHist").onclick = fecharModal;
+    Array.prototype.forEach.call($("#mdBody").querySelectorAll("[data-hres],[data-hjson]"), function(b){
+      b.onclick = function(){
+        var uid = b.getAttribute("data-hres") || b.getAttribute("data-hjson");
+        var r = l.filter(function(x){ return x.uid === uid; })[0];
+        if(!r) return;
+        copiar(b.hasAttribute("data-hres") ? r.resumo : JSON.stringify(r.json, null, 1));
+      };
+    });
+  });
+};
+
+function pedirNova(){
+  modal("<h3>Começar nova visita?</h3><p>O histórico das visitas concluídas não é apagado. " +
+    "O rascunho atual, sim.</p>" +
+    '<button class="btn p full" id="mNovaSim">Sim, começar nova visita</button>' +
+    '<div style="height:9px"></div><button class="btn full" id="mNovaNao">Cancelar</button>');
+  $("#mNovaSim").onclick = function(){ novaVisita(); fecharModal(); };
+  $("#mNovaNao").onclick = fecharModal;
+}
+$("#btnNova").onclick = pedirNova;
+
+function novaVisita(){
+  D = { dataVisita: hojeISO(), horaVisita: agoraHM(), realizada: "Sim" };
+  FT = {}; passo = 0; concluida = false;
+  limparRascunho(); salvar(); salvarFotos(); render();
+}
+
+/* ------------------------------ inicialização ---------------------------
+   A primeira tela é desenhada na hora, sem esperar armazenamento nenhum.
+   Rascunho e fotos entram depois, se o navegador permitir. Assim o
+   formulário abre mesmo quando o celular bloqueia IndexedDB/localStorage. */
+function iniciar(){
+  D = { dataVisita: hojeISO(), horaVisita: agoraHM(), realizada: "Sim" };
+  passo = 0;
+  render();
+
+  var bruto = null;
+  try { bruto = localStorage.getItem(APP.chaveRasc); } catch(e){}
+
+  lerFotos().catch(function(){ return null; }).then(function(f){
+    FT = f || {};
+    if(!bruto) { salvar(); return; }
+    var r = null;
+    try { r = JSON.parse(bruto); } catch(e){}
+    if(!(r && r.D && Object.keys(r.D).length > 3)) { salvar(); return; }
+    var q = new Date(r.quando || Date.now());
+    modal("<h3>Há um rascunho em andamento</h3><p>" +
+      esc((r.D.id || "sem ID") + " — " + (r.D.cliente || "sem cliente")) + "<br>" +
+      "Salvo em " + q.toLocaleDateString("pt-BR") + " às " +
+      q.toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" }) + "</p>" +
+      '<button class="btn p full" id="mRet">Retomar este rascunho</button>' +
+      '<div style="height:9px"></div><button class="btn full" id="mNov">Começar visita nova</button>');
+    $("#mRet").onclick = function(){ D = r.D; passo = r.passo || 0; fecharModal(); render(); };
+    $("#mNov").onclick = function(){ FT = {}; novaVisita(); fecharModal(); };
+  });
+}
+
+/* Rede de segurança: se algo quebrar, mostra o motivo em vez de tela branca. */
+window.onerror = function(msg, arq, lin){
+  var m = document.getElementById("main");
+  if(m && !m.querySelector(".step-h")){
+    m.innerHTML = '<div class="card"><div class="aviso e"><b>O formulário não conseguiu abrir neste navegador.</b><br><br>' +
+      "Tente abrir o arquivo pelo <b>Chrome</b> (Android) ou <b>Safari</b> (iPhone), " +
+      "em vez do visualizador do WhatsApp ou do gerenciador de arquivos.<br><br>" +
+      "<small>Detalhe técnico: " + esc(msg) + " (linha " + lin + ")</small></div></div>";
+  }
+};
+
+try { iniciar(); }
+catch(e){ window.onerror(e.message, "", 0); }
+
+/* Guarda o formulário no aparelho para abrir sem sinal. Só funciona quando
+   servido por http/https — abrindo o arquivo direto (file://) é ignorado. */
+if("serviceWorker" in navigator && location.protocol.indexOf("http") === 0){
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("./sw.js").catch(function(){});
+  });
+}
+</script>
+</body>
+</html>
