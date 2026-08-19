@@ -1,7 +1,7 @@
 /* EnergizaCar — Formulário de Visita Técnica
    Service worker: guarda o formulário no aparelho para funcionar sem sinal. */
 
-const CACHE = 'energizacar-visita-v2.0';
+const CACHE = 'energizacar-visita-v2.4';
 const ARQUIVOS = ['./', './index.html', './manifest.webmanifest', './icone-192.png', './icone-512.png'];
 
 self.addEventListener('install', function (e) {
