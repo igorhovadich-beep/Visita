@@ -162,6 +162,31 @@ pre.resumo{background:#fff;color:var(--tx);border:1.5px solid var(--bd);font-siz
   padding:11px 16px;border-radius:99px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s
 }
 .toast.on{opacity:1}
+
+/* ---------- materiais ---------- */
+.mat-total{background:var(--v);color:#fff;border-radius:13px;padding:13px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;font-size:14px}
+.mat-total b{font-size:19px;margin-left:auto;white-space:nowrap}
+.mat-busca{margin-bottom:12px}
+.fam{border:1.5px solid var(--bd);border-radius:12px;margin-bottom:9px;overflow:hidden;background:#fff}
+.fam .fh{padding:14px 12px;font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:9px;cursor:pointer;min-height:52px}
+.fam .fh .seta{color:var(--mut);font-size:12px;transition:transform .15s}
+.fam.aberta .fh .seta{transform:rotate(90deg)}
+.fam .fh .cnt{margin-left:auto;font-size:12px;font-weight:800;color:#fff;background:var(--ok);padding:3px 9px;border-radius:99px}
+.fam .fc{display:none;border-top:1px solid var(--bd)}
+.fam.aberta .fc{display:block}
+.it{padding:11px 12px;border-bottom:1px solid #EEF2F0}
+.it:last-child{border-bottom:none}
+.it.sel{background:var(--okBg)}
+.it .d{font-weight:600;font-size:13.5px;line-height:1.3}
+.it .u{font-size:12px;color:var(--mut);margin-top:2px}
+.it .q{display:flex;align-items:center;gap:8px;margin-top:9px}
+.it .q button{width:46px;height:46px;border-radius:10px;border:1.5px solid var(--bd);background:#fff;font-size:22px;font-weight:700;cursor:pointer;flex:none;padding:0;line-height:1}
+.it .q input{width:82px;text-align:center;padding:12px 4px}
+.it .q .sub{margin-left:auto;font-weight:800;font-size:14px;color:var(--v)}
+.mat-lista{font-size:13.5px}
+.mat-lista .l{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #EEF2F0}
+.mat-lista .l:last-child{border-bottom:none}
+.mat-lista .l span:last-child{margin-left:auto;font-weight:700;white-space:nowrap}
 .hide{display:none !important}
 </style>
 </head>
@@ -212,17 +237,84 @@ pre.resumo{background:#fff;color:var(--tx);border:1.5px solid var(--bd);font-siz
    Arquivo único, offline. Sem bibliotecas externas.
    ========================================================================== */
 
-var APP = { versao: "2.0", chaveRasc: "ec_vt_rascunho", chaveHist: "ec_vt_historico" };
+var APP = { versao: "2.4", chaveRasc: "ec_vt_rascunho", chaveHist: "ec_vt_historico" };
 
 /* ------------------------- listas (iguais às do painel) ------------------ */
 var TIPOS = ["Instalação Individual", "Instalação Coletiva", "Carregador DC"];
-var TECNICOS = ["Técnico 1", "Técnico 2", "Técnico 3", "A definir"];
+var TECNICOS = ["Igor", "Altamiro"];
+var DIAMETROS = ["25 mm", "32 mm", "40 mm", "50 mm", "60 mm", "75 mm"];
+var PERCURSOS = ["Eletroduto de PVC", "Eletroduto de aço", "Eletrocalha existente", "Piso"];
+var TENSOES_ORIGEM = ["127 V (fase-neutro)", "220 V (fase-neutro)"];
 var RESULTADOS = ["Viável — seguir para orçamento","Viável com ressalvas","Necessita estudo de carga",
   "Necessita projeto elétrico","Necessita retorno ao local","Inviável tecnicamente","Cliente ausente","Outro"];
 var FAB_WALLBOX = ["WEG","Intelbras","Tesla","BYD","ABB","Schneider Electric","Siemens","Wallbox","Zencar","Não definido"];
 var FAB_DC = ["ABB","Siemens","Tritium","BYD","WEG","Efacec","Kempower","Não definido"];
-var TENSOES = ["220 V monofásico","220 V trifásico","380 V trifásico","440 V trifásico","A verificar"];
 var CONECTORES = ["Tipo 2 (Mennekes)","Tipo 1 (J1772)","Tomada 2P+T 20 A","Tomada 2P+T 32 A","CCS2","GB/T","Outro"];
+
+/* Base Geral de preços EnergizaCar — 61 itens. [família, código, descrição, unidade, preço] */
+var MATERIAIS = [
+["Cabos","218.09.0000.182/1","CABO FLEX 750V 10MM PRETO","MT",11.18],
+["Cabos","218.09.0000.183/8","CABO FLEX 750V 10MM VERDE","MT",11.18],
+["Cabos","218.33.0000.057/9","CABO FLEX 1KV 3X10MM HEPR","MT",44.86],
+["Cabos","218.07.0000.011/6","CABO PP 500V 3X6MM","MT",25.17],
+["Cabos","218.33.0000.013/5","CABO FLEX 1KV 10MM PRETO HEPR","MT",12.03],
+["Cabos","218.09.0000.181/4","CABO FLEX 750V 10MM BRANCO","MT",10.89],
+["Eletrodutos e Conexões","249.19.0000.013/5","ELETRODUTO AÇO GALV. 3/4\" 3m","PC",17.17],
+["Eletrodutos e Conexões","249.19.0000.014/2","ELETRODUTO AÇO GALV. 1\" 3m","PC",27.94],
+["Eletrodutos e Conexões","249.20.0000.011/7","LUVA 3/4\"","PC",1.13],
+["Eletrodutos e Conexões","249.20.0000.012/4","LUVA 1\"","PC",1.89],
+["Eletrodutos e Conexões","249.16.0000.028/2","CURVA 90° 3/4\"","PC",3.32],
+["Eletrodutos e Conexões","249.16.0000.024/4","CURVA S 3/4\"","PC",5.8],
+["Eletrodutos e Conexões","249.16.0000.029/9","CURVA 90° 1\"","PC",5.09],
+["Eletrodutos e Conexões","249.29.0249.011/5","BOX RETO 3/4\"","PC",4.84],
+["Eletrodutos e Conexões","249.29.0249.012/2","BOX RETO 1\"","PC",6.48],
+["Eletrodutos e Conexões","249.29.0663.014/2","UNIDUT RETO 3/4\"","PC",3.86],
+["Eletrodutos e Conexões","249.29.0663.015/9","UNIDUT RETO 1\"","PC",6.55],
+["Conduletes","249.33.0000.169/9","CONDULETE LB 3/4\"","PC",20.36],
+["Conduletes","249.33.0000.170/5","CONDULETE LL 3/4\"","PC",18.46],
+["Conduletes","249.33.0000.172/9","CONDULETE LR 3/4\"","PC",18.98],
+["Conduletes","249.33.0000.181/1","CONDULETE LB 1\"","PC",36.41],
+["Fixação","249.12.0406.047/7","ABRAÇADEIRA 3/4\"","PC",1.25],
+["Fixação","249.12.0406.048/4","ABRAÇADEIRA 1\"","PC",2.03],
+["Fixação","225.03.0128.036/8","BUCHA NYLON 8mm","PC",0.54],
+["Fixação","225.06.0000.062/9","PARAFUSO 3/16x45","PC",0.48],
+["Fixação","210.02.0155.040/8","ABRAÇADEIRA 4,6X200MM PACOTE 100UN","PT",20.94],
+["Proteção Elétrica","221.03.0145.118/2","DISJUNTOR BIPOLAR 40A","PC",24.19],
+["Proteção Elétrica","249.35.0832.002/8","PRENSA CABO 3/4\"","PC",4.19],
+["Proteção Elétrica","219.05.0000.019/3","CONECTOR BIMETÁLICO 25mm²","PC",11.2],
+["Proteção Elétrica","241.06.0361.115/8","DPS 275V 20KA","PC",42.28],
+["Proteção Elétrica","221.03.0375.204/1","DISJUNTOR BIPOLAR 40A WEG","PC",35.79],
+["Proteção Elétrica","221.06.0832.014/3","DR CLASSE A 2X40A 30MA","PC",228.2],
+["Proteção Elétrica","219.05.0000.017/9","CONECTOR BIMETÁLICO 10MM²","PC",9.3],
+["Proteção Elétrica","221.03.0036.043/0","DISJUNTOR TRIPOLAR 70A","PC",78.77],
+["Terminais","219.22.0201.002/9","TERMINAL TUBULAR 10mm","PC",0.44],
+["Terminais","219.22.0201.001/2","TERMINAL TUBULAR 6mm","PC",0.46],
+["Terminais","219.22.0201.010/4","TERMINAL TUBULAR 4MM PACOTE 30UN","PT",10.91],
+["Terminais","219.15.0714.172/8","TERMINAL COMPRESSÃO 6MM M5","PC",1.89],
+["Terminais","219.15.0714.008/0","TERMINAL COMPRESSÃO 10MM M6","PC",1.1],
+["Terminais","219.22.0714.193/3","TERMINAL ANEL 2,5-6MM M5 PACOTE 30UN","PT",33.39],
+["Terminais","219.01.0405.001/3","TERMINAL CONEXÃO PINO CURTO TCC25","PC",13.23],
+["Consumíveis","236.11.0000.002/3","GESSO RÁPIDO 1kg","KG",3.54],
+["Consumíveis","234.11.0394.004/5","FITA ISOLANTE PRETA 19MMX20M","RL",34.84],
+["PVC","249.09.0405.002/3","ELETRODUTO PVC CINZA 3/4\" 3M","PC",39.78],
+["PVC","249.07.0405.001/8","CONDULETE PVC 1/2\" 3/4\" SEM TAMPA","PC",13.02],
+["PVC","249.07.0405.019/3","TAMPA CEGA PVC 1/2\" 3/4\"","PC",4.58],
+["PVC","249.07.0405.024/7","ADAPTADOR PVC 3/4\" PARA CONDULETE","PC",1.76],
+["PVC","249.04.0663.001/3","TAMPÃO PVC 3/4\"","PC",0.28],
+["PVC","249.02.0405.006/8","ABRAÇADEIRA PVC 3/4\"","PC",2.68],
+["PVC","249.10.0405.004/3","LUVA PVC SEM ROSCA 3/4\"","PC",2.68],
+["PVC","249.09.0415.005/1","ELETRODUTO PVC CINZA 1\" 3M","PC",20.4],
+["PVC","249.10.0415.033/0","BOX PVC RETO 1\"","PC",4.96],
+["PVC","249.07.0415.093/0","TAMPÃO PVC 1/2\" 3/4\" 1\"","PC",0.74],
+["PVC","249.02.0415.004/1","ABRAÇADEIRA PVC 1\"","PC",1.75],
+["PVC","249.07.0415.013/8","CONDULETE PVC 1\" SEM TAMPA","PC",9.5],
+["PVC","249.07.0415.040/4","TAMPA CONDULETE PVC 1 TOMADA 1\"","PC",3.51],
+["Tomadas","232.02.0832.042/6","TOMADA SOBREPOR INDUSTRIAL 3X16A 200/250V AZUL","PC",38.91],
+["Tomadas","232.01.0158.011/8","TOMADA PARA CONDULETE 2P+T 20A PRETA","PC",7.57],
+["Quadros e Barramentos","214.14.0340.002/3","KIT BARRAMENTO BIFÁSICO DIN 63A 12 POLOS","PC",27.9],
+["Quadros e Barramentos","214.14.0340.008/5","KIT BARRAMENTO NEUTRO/TERRA 12 POLOS","PC",24.36],
+["Quadros e Barramentos","214.14.0361.007/1","CAIXA DE PROTEÇÃO MOBI BOX 220V 8KW SEM MEDIDOR","PC",437.14]
+];
 
 var ORIGENS = [
   { v:"Medidor do apartamento, na garagem", d:"Padrão CEMIG garagem — medidor da unidade dentro da garagem" },
@@ -248,6 +340,11 @@ var D = {};        // campos
 var FT = {};       // fotos: { f1:"dataURL", f8:["dataURL", ...] }
 var passo = 0;     // índice na lista de etapas ativas
 var concluida = false;
+
+/* Valores com que toda visita nova começa. */
+function visitaVazia(){
+  return { dataVisita: hojeISO(), horaVisita: agoraHM(), realizada: "Sim", medidor_kwh: "Não", mat: {} };
+}
 
 /* ------------------------------ utilidades ------------------------------ */
 function $(s, c){ return (c || document).querySelector(s); }
@@ -367,13 +464,22 @@ function limparRascunho(){
 }
 
 /* ============================== ETAPAS ================================== */
+/* Nome final do técnico, venha da lista ou do campo livre. */
+function tecnicoNome(){
+  if(D.tecnico_opt === "Outro") return D.tecnico_livre || "";
+  return D.tecnico_opt || "";
+}
+
 function etapasAtivas(){
+  /* Visita não realizada: fecha na própria etapa 2, sem passar pelo fechamento. */
+  if(D.realizada === "Não") return ["ident", "realizada", "fim"];
   var s = ["ident", "realizada"];
   if(D.realizada !== "Não"){
-    s.push("origem", "percurso", "ponto");
+    s.push("origem", "percurso");
+    if(D.tipo !== TIPOS[2]) s.push("ponto");   /* no DC, tudo fica na etapa do carregador */
     if(D.tipo === TIPOS[1]) s.push("coletiva");
     if(D.tipo === TIPOS[2]) s.push("dc");
-    s.push("fotos");
+    s.push("materiais", "fotos");
   }
   s.push("fechamento", "fim");
   return s;
@@ -381,7 +487,7 @@ function etapasAtivas(){
 var TITULOS = {
   ident:"Identificação", realizada:"A visita foi realizada?", origem:"Origem da alimentação",
   percurso:"Percurso e obra civil", ponto:"Ponto de recarga", coletiva:"Instalação coletiva",
-  dc:"Carregador DC", fotos:"Fotos da visita", fechamento:"Resultado e fechamento", fim:"Visita concluída"
+  dc:"Carregador DC", materiais:"Materiais", fotos:"Fotos da visita", fechamento:"Resultado e fechamento", fim:"Visita concluída"
 };
 
 /* Campos que travam o avanço (só o essencial da proposta) */
@@ -390,14 +496,14 @@ var OBRIGA = { ident:["tipo"], origem:["origem"], percurso:["distancia"], fecham
 /* Campos importantes para a proposta — geram aviso na tela final, não travam */
 var IMPORTANTES = [
   ["id","ID da solicitação"], ["cliente","Cliente / condomínio"], ["endereco","Endereço"],
-  ["vaga","Vaga"], ["tecnico","Técnico responsável"],
+  ["vaga","Vaga"], ["tecnico_opt","Técnico responsável"],
   ["ponto_derivacao","Localização do ponto de derivação"], ["tensao","Tensão no ponto de origem"],
-  ["fases","Número de fases"], ["espaco_quadro","Espaço livre no quadro de origem"],
-  ["disjuntor_a","Corrente do disjuntor a instalar"], ["aterramento","Aterramento existente"],
+  ["disjuntor_existente","Disjuntor existente (A)"], ["aterramento","Aterramento existente"],
   ["percurso","Tipo de percurso"], ["dificuldade","Grau de dificuldade"],
-  ["tipo_ponto","Tipo de ponto de recarga"], ["dr_classe_a","DR Classe A previsto"],
+  ["tipo_ponto","Tipo de ponto de recarga"],
   ["local_quadro","Local previsto para o quadro de recarga"],
-  ["necessitaOrcamento","Necessita orçamento"], ["prazo_dias","Prazo estimado de execução"]
+  ["necessitaOrcamento","Necessita orçamento"], ["prazo_dias","Prazo estimado de execução"],
+  ["preco_tecnico","Preço do técnico (R$)"]
 ];
 
 /* ============================ RENDERIZAÇÃO ============================== */
@@ -438,10 +544,11 @@ function telaIdent(n, t){
     fld("cliente", "Cliente / condomínio / empresa", txt("cliente", "Nome como está na ordem")) +
     fld("endereco", "Endereço", txt("endereco", "Rua, número, bairro, cidade")) +
     fld("vaga", "Vaga", txt("vaga", "Ex.: G1-42")) +
-    fld("tecnico", "Técnico responsável",
-      '<select data-k="tecnico_sel">' + opcoes(TECNICOS.concat(["Outro — digitar"]), TECNICOS.indexOf(D.tecnico) >= 0 ? D.tecnico : (D.tecnico ? "Outro — digitar" : "")) + "</select>" +
-      '<div style="margin-top:8px" class="' + (TECNICOS.indexOf(D.tecnico) >= 0 || !D.tecnico ? "hide" : "") + '" id="tecOutro">' +
-      '<input type="text" data-k="tecnico" value="' + esc(D.tecnico || "") + '" placeholder="Nome do técnico"></div>') +
+    fld("tecnico_opt", "Técnico responsável",
+      opts("tecnico_opt", TECNICOS.concat(["Outro"]), true) +
+      (D.tecnico_opt === "Outro" ?
+        '<div style="margin-top:9px"><input type="text" data-k="tecnico_livre" value="' +
+        esc(D.tecnico_livre || "") + '" placeholder="Nome do técnico"></div>' : "")) +
     '<div class="row2">' +
       fld("dataVisita", "Data da visita", '<input type="date" data-k="dataVisita" value="' + esc(D.dataVisita || "") + '">') +
       fld("horaVisita", "Hora", '<input type="time" data-k="horaVisita" value="' + esc(D.horaVisita || "") + '">') +
@@ -455,9 +562,18 @@ function telaRealizada(n, t){
   if(D.realizada === "Não"){
     h += '<div class="card">' +
       fld("motivo", "Motivo", opts("motivo", ["Cliente ausente","Acesso negado","Endereço não localizado","Remarcada a pedido do cliente","Outro"])) +
-      fld("obsMotivo", "Observação", area("obsMotivo", "O que aconteceu no local")) + "</div>";
+      fld("obsMotivo", "Observação", area("obsMotivo", "O que aconteceu no local")) +
+      '<div class="aviso i">A visita se encerra aqui. Ao avançar, o resumo já sai pronto para enviar ao escritório.</div>' +
+      "</div>";
   }
   return h;
+}
+
+/* O disjuntor levantado muda de nome conforme o tipo de visita. */
+function rotuloDisjuntor(){
+  if(D.tipo === TIPOS[1]) return "Disjuntor do quadro geral do condomínio (A)";
+  if(D.tipo === TIPOS[2]) return "Disjuntor de origem (A)";
+  return "Disjuntor do apartamento (A)";
 }
 
 function telaOrigem(n, t){
@@ -466,12 +582,13 @@ function telaOrigem(n, t){
     '<div class="card">' + fld("origem", "De onde sai o ramal alimentador", opts("origem", ORIGENS)) + "</div>" +
     '<div class="card">' +
       fld("ponto_derivacao", "Localização exata do ponto de derivação", txt("ponto_derivacao", "Ex.: hall do 3º pavimento, quadro à direita")) +
-      '<div class="row2">' +
-        fld("tensao", "Tensão no ponto de origem", sel("tensao", TENSOES)) +
-        fld("fases", "Número de fases", sel("fases", ["Monofásico","Bifásico","Trifásico"])) +
-      "</div>" +
-      fld("espaco_quadro", "Há espaço livre no quadro de origem para o disjuntor?", yn("espaco_quadro")) +
-      fld("disjuntor_a", "Corrente do disjuntor a instalar (A)", num("disjuntor_a", "Ex.: 40")) +
+      fld("tensao", "Tensão no ponto de origem", opts("tensao", TENSOES_ORIGEM, true)) +
+      /* No Carregador DC o disjuntor de origem é levantado na etapa do carregador. */
+      (D.tipo === TIPOS[2] ? "" :
+        fld("disjuntor_existente", rotuloDisjuntor(), num("disjuntor_existente", "Ex.: 40"),
+          "Corrente nominal do disjuntor que já está instalado, em ampères.")) +
+      (D.tipo === TIPOS[1] ?
+        fld("disjuntor_aptos", "Disjuntor geral dos apartamentos (A)", num("disjuntor_aptos", "Ex.: 50")) : "") +
       fld("aterramento", "Existe aterramento no local?", yn("aterramento")) +
     "</div>" +
     '<div class="card">' +
@@ -488,10 +605,16 @@ function telaPercurso(n, t){
     '<div class="card">' +
       fld("distancia", "Distância do ponto de derivação até a vaga (m)", num("distancia", "Ex.: 28", true),
         "Meça pelo caminho real do eletroduto, não em linha reta.") +
-      fld("percurso", "Percurso", opts("percurso", ["Aparente","Embutido","Misto"], true)) +
+      fld("percurso", "Percurso", opts("percurso", PERCURSOS)) +
+    "</div>" +
+    '<div class="card">' +
       '<div class="row2">' +
-        fld("furos_laje", "Furos em laje (40 mm)", num("furos_laje", "0")) +
-        fld("furos_viga", "Furos em viga (40 mm)", num("furos_viga", "0")) +
+        fld("furos_laje", "Furos em laje — quantidade", num("furos_laje", "0")) +
+        fld("furos_laje_diam", "Diâmetro", sel("furos_laje_diam", DIAMETROS)) +
+      "</div>" +
+      '<div class="row2">' +
+        fld("furos_viga", "Furos em viga — quantidade", num("furos_viga", "0")) +
+        fld("furos_viga_diam", "Diâmetro", sel("furos_viga_diam", DIAMETROS)) +
       "</div>" +
       fld("obstaculos", "Obstáculos no percurso", area("obstaculos", "Ex.: forro de gesso, tubulação hidráulica, junta de dilatação"), null, true) +
     "</div>" +
@@ -503,10 +626,8 @@ function telaPercurso(n, t){
 }
 
 function telaPonto(n, t){
-  var dc = D.tipo === TIPOS[2];
-  var h = cab(n, t, "Ponto de recarga", dc ? "Os dados do carregador DC ficam na etapa seguinte." : "O que será instalado na vaga.");
-  if(!dc){
-    h += '<div class="card">' +
+  return cab(n, t, "Ponto de recarga", "O que será instalado na vaga.") +
+    '<div class="card">' +
       fld("tipo_ponto", "Tipo de ponto", opts("tipo_ponto", ["Tomada","Wallbox"], true)) +
       (D.tipo_ponto === "Wallbox" ?
         fld("wallbox_por", "Wallbox fornecido por", opts("wallbox_por", ["Cliente","EnergizaCar"], true)) +
@@ -515,14 +636,11 @@ function telaPonto(n, t){
         '<div class="row2">' +
           fld("potencia_kw", "Potência (kW)", num("potencia_kw", "Ex.: 7,4", true)) +
           fld("conector", "Tipo de conector", sel("conector", CONECTORES)) +
-        "</div>" : "") + "</div>";
-  }
-  h += '<div class="card">' +
-    fld("dr_classe_a", "DR Classe A previsto?", yn("dr_classe_a"),
-      "Exigência da NBR 17019 para ponto de recarga.") +
-    fld("local_quadro", "Local previsto para o quadro exclusivo de recarga", txt("local_quadro", "Ex.: parede ao lado da vaga, 1,5 m do piso")) +
+        "</div>" : "") +
+    "</div>" +
+    '<div class="card">' +
+      fld("local_quadro", "Local previsto para o quadro exclusivo de recarga", txt("local_quadro", "Ex.: parede ao lado da vaga, 1,5 m do piso")) +
     "</div>";
-  return h;
 }
 
 function telaColetiva(n, t){
@@ -553,6 +671,8 @@ function telaDC(n, t){
   return cab(n, t, "Carregador DC", "Entrada de energia, obra civil e aprovação junto à CEMIG.") +
     '<div class="card">' +
       fld("dc_entrada", "Entrada de energia", opts("dc_entrada", ["Baixa tensão","Média tensão"], true)) +
+      fld("disjuntor_existente", "Disjuntor de origem (A)", num("disjuntor_existente", "Ex.: 250"),
+        "Corrente nominal do disjuntor no ponto de origem, em ampères.") +
       fld("dc_trafo", "Transformador existente?", yn("dc_trafo")) +
       (D.dc_trafo === "Sim" ? fld("dc_trafo_kva", "Potência do transformador (kVA)", num("dc_trafo_kva", "Ex.: 300", true)) : "") +
       '<div class="row2">' +
@@ -577,7 +697,143 @@ function telaDC(n, t){
       fld("dc_area", "Área disponível e espaço de manobra do veículo", area("dc_area", "Ex.: 6 x 3 m, manobra livre pela lateral")) +
       fld("dc_cemig", "Necessita aprovação junto à CEMIG?", yn("dc_cemig")) +
       fld("dc_abrigo", "Instalação", opts("dc_abrigo", ["Abrigada","Exposta ao tempo"], true)) +
+      fld("local_quadro", "Local previsto para o quadro de recarga", txt("local_quadro", "Ex.: junto ao QGBT, parede lateral")) +
     "</div>";
+}
+
+
+/* ============================== MATERIAIS ==============================
+   Base Geral embutida no arquivo. O técnico lança as quantidades e o total
+   sai na hora, sem consultar planilha e sem internet. */
+function matQtd(cod){
+  var v = (D.mat || {})[cod];
+  if(vazio(v)) return 0;
+  var n = parseFloat(String(v).replace(",", "."));
+  return isFinite(n) && n > 0 ? n : 0;
+}
+function matSelecionados(){
+  var out = [];
+  MATERIAIS.forEach(function(m){
+    var q = matQtd(m[1]);
+    if(q > 0) out.push({ familia:m[0], codigo:m[1], descricao:m[2], unidade:m[3],
+      precoUnitario:m[4], quantidade:q, total:Math.round(q * m[4] * 100) / 100 });
+  });
+  return out;
+}
+function matTotal(){
+  var t = 0;
+  matSelecionados().forEach(function(i){ t += i.total; });
+  return Math.round(t * 100) / 100;
+}
+function matFamilias(){
+  var f = [];
+  MATERIAIS.forEach(function(m){ if(f.indexOf(m[0]) < 0) f.push(m[0]); });
+  return f;
+}
+
+function telaMateriais(n, t){
+  var h = cab(n, t, "Materiais", "Lance a quantidade dos itens que a obra vai consumir. O total é calculado na hora.");
+  h += '<div class="mat-total"><span>Material previsto</span><b id="matTotal">R$ ' + moedaBR(matTotal()) + "</b></div>";
+  h += '<div class="mat-busca"><input type="text" id="matBusca" placeholder="Buscar item — ex.: cabo, eletroduto, disjuntor"></div>';
+
+  matFamilias().forEach(function(fam, i){
+    var itens = MATERIAIS.filter(function(m){ return m[0] === fam; });
+    var sel = itens.filter(function(m){ return matQtd(m[1]) > 0; }).length;
+    h += '<div class="fam' + (sel ? " aberta" : "") + '" data-fam="' + i + '">' +
+      '<div class="fh"><span class="seta">▶</span><span>' + esc(fam) + "</span>" +
+      '<span class="cnt' + (sel ? "" : " hide") + '">' + sel + "</span></div>" +
+      '<div class="fc">';
+    itens.forEach(function(m){
+      var q = matQtd(m[1]), sub = Math.round(q * m[4] * 100) / 100;
+      h += '<div class="it' + (q > 0 ? " sel" : "") + '" data-cod="' + esc(m[1]) + '" data-preco="' + m[4] + '" data-busca="' + esc((m[2] + " " + m[0]).toLowerCase()) + '">' +
+        '<div class="d">' + esc(m[2]) + "</div>" +
+        '<div class="u">' + esc(m[3]) + " · R$ " + moedaBR(m[4]) + " a unidade</div>" +
+        '<div class="q">' +
+          '<button type="button" data-mm="-">−</button>' +
+          '<input type="number" inputmode="decimal" step="any" min="0" data-mq="' + esc(m[1]) + '" value="' + (q > 0 ? q : "") + '" placeholder="0">' +
+          '<button type="button" data-mm="+">+</button>' +
+          '<span class="sub">' + (q > 0 ? "R$ " + moedaBR(sub) : "") + "</span>" +
+        "</div></div>";
+    });
+    h += "</div></div>";
+  });
+
+  h += '<div class="card" id="matResumo">' + matResumoHTML() + "</div>";
+  return h;
+}
+
+function matResumoHTML(){
+  var sel = matSelecionados();
+  if(!sel.length) return '<div class="sec-t">Nada lançado ainda</div>' +
+    '<div class="hint">Toque em + nos itens acima. Dá para avançar sem lançar material.</div>';
+  var h = '<div class="sec-t">Itens lançados <span class="tag">' + sel.length + "</span></div>" +
+    '<div class="mat-lista">';
+  sel.forEach(function(i){
+    h += '<div class="l"><span>' + esc(i.descricao) + "<br><small style=\"color:var(--mut)\">" +
+      String(i.quantidade).replace(".", ",") + " " + esc(i.unidade) + " × R$ " + moedaBR(i.precoUnitario) +
+      "</small></span><span>R$ " + moedaBR(i.total) + "</span></div>";
+  });
+  h += '</div><div class="aviso i" style="margin-top:12px">Total de material: <b>R$ ' + moedaBR(matTotal()) + "</b></div>";
+  return h;
+}
+
+function ligarMateriais(){
+  function atualiza(item){
+    var cod = item.getAttribute("data-cod"), preco = parseFloat(item.getAttribute("data-preco"));
+    var q = matQtd(cod), sub = Math.round(q * preco * 100) / 100;
+    item.className = "it" + (q > 0 ? " sel" : "");
+    item.querySelector(".sub").textContent = q > 0 ? "R$ " + moedaBR(sub) : "";
+    var fam = item.parentNode.parentNode;
+    var n = 0;
+    Array.prototype.forEach.call(fam.querySelectorAll(".it"), function(x){
+      if(matQtd(x.getAttribute("data-cod")) > 0) n++;
+    });
+    var cnt = fam.querySelector(".cnt");
+    cnt.textContent = n;
+    if(n) cnt.classList.remove("hide"); else cnt.classList.add("hide");
+    $("#matTotal").textContent = "R$ " + moedaBR(matTotal());
+    $("#matResumo").innerHTML = matResumoHTML();
+    salvar();
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".fam .fh"), function(fh){
+    fh.onclick = function(){ fh.parentNode.classList.toggle("aberta"); };
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-mq]"), function(inp){
+    inp.oninput = function(){
+      if(!D.mat) D.mat = {};
+      D.mat[inp.getAttribute("data-mq")] = inp.value;
+      atualiza(inp.closest(".it"));
+    };
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-mm]"), function(b){
+    b.onclick = function(){
+      var item = b.closest(".it"), cod = item.getAttribute("data-cod");
+      var q = matQtd(cod) + (b.getAttribute("data-mm") === "+" ? 1 : -1);
+      if(q < 0) q = 0;
+      if(!D.mat) D.mat = {};
+      if(q === 0) delete D.mat[cod]; else D.mat[cod] = q;
+      item.querySelector("[data-mq]").value = q > 0 ? q : "";
+      atualiza(item);
+    };
+  });
+
+  var busca = $("#matBusca");
+  busca.oninput = function(){
+    var termo = busca.value.trim().toLowerCase();
+    Array.prototype.forEach.call(document.querySelectorAll(".fam"), function(fam){
+      var achou = 0;
+      Array.prototype.forEach.call(fam.querySelectorAll(".it"), function(it){
+        var bate = !termo || it.getAttribute("data-busca").indexOf(termo) >= 0;
+        it.style.display = bate ? "" : "none";
+        if(bate) achou++;
+      });
+      fam.style.display = achou ? "" : "none";
+      if(termo) fam.classList.add("aberta");
+    });
+  };
 }
 
 function telaFotos(n, t){
@@ -614,6 +870,8 @@ function telaFechamento(n, t){
       fld("necessitaProjeto", "Necessita projeto?", yn("necessitaProjeto")) +
       fld("necessitaRetorno", "Necessita retorno ao local?", yn("necessitaRetorno")) +
       fld("prazo_dias", "Prazo estimado de execução (dias)", num("prazo_dias", "Ex.: 3")) +
+      fld("preco_tecnico", "Preço do técnico (R$)", num("preco_tecnico", "Ex.: 1250,00", true),
+        "Valor da mão de obra do técnico para esta execução.") +
     "</div>") +
     '<div class="card">' + fld("obsTecnico", "Observações do técnico", area("obsTecnico", "O que o escritório precisa saber e não coube nos campos acima")) + "</div>";
 }
@@ -624,10 +882,12 @@ function pendencias(){
   if(D.realizada === "Não") return p;
   IMPORTANTES.forEach(function(par){
     if(par[0] === "tipo_ponto" && D.tipo === TIPOS[2]) return;
+    if(par[0] === "tecnico_opt"){ if(vazio(tecnicoNome())) p.push(par[1]); return; }
     if(vazio(D[par[0]])) p.push(par[1]);
   });
   if(D.tipo === TIPOS[1]){
-    [["col_carga","Carga disponível no quadro geral"],["col_demanda","Demanda contratada"],
+    [["disjuntor_aptos","Disjuntor geral dos apartamentos"],
+     ["col_carga","Carga disponível no quadro geral"],["col_demanda","Demanda contratada"],
      ["col_vagas1","Vagas na 1ª etapa"],["col_autorizacao","Situação da autorização"]].forEach(function(x){
       if(vazio(D[x[0]])) p.push(x[1]); });
   }
@@ -672,6 +932,16 @@ function telaFim(n, t){
       "Todos os campos essenciais da proposta e todas as fotos foram preenchidos.</div></div>";
   }
 
+  if(D.realizada !== "Não" && (matTotal() > 0 || !vazio(D.preco_tecnico))){
+    h += '<div class="card"><div class="sec-t">Custos levantados</div>' +
+      '<div class="mat-lista" style="margin-top:6px">' +
+        (matTotal() > 0 ? '<div class="l"><span>Material previsto<br><small style="color:var(--mut)">' +
+          matSelecionados().length + ' itens da Base Geral</small></span><span>R$ ' + moedaBR(matTotal()) + '</span></div>' : '') +
+        (vazio(D.preco_tecnico) ? '' : '<div class="l"><span>Preço do técnico</span><span>R$ ' + moedaBR(D.preco_tecnico) + '</span></div>') +
+      '</div>' +
+      '<div class="hint" style="margin-top:10px">Custos de campo. A formação de preço da proposta é feita no escritório.</div></div>';
+  }
+
   h += '<div class="card"><div class="sec-t">Resumo para o WhatsApp</div>' +
     '<div class="hint">Envie para o escritório. É este texto que vira a proposta.</div>' +
     '<pre class="out resumo" id="preResumo">' + esc(resumoTexto()) + "</pre>" +
@@ -709,7 +979,7 @@ function resumoTexto(){
   s += ln("Cliente", D.cliente);
   s += ln("Endereço", D.endereco);
   s += ln("Vaga", D.vaga);
-  s += ln("Técnico", D.tecnico);
+  s += ln("Técnico", tecnicoNome());
   s += ln("Data", dataBR(D.dataVisita) + (D.horaVisita ? " às " + D.horaVisita : ""));
   s += "\n";
 
@@ -726,21 +996,21 @@ function resumoTexto(){
   s += ln("Origem", D.origem);
   s += ln("Ponto de derivação", D.ponto_derivacao);
   s += ln("Tensão", D.tensao);
-  s += ln("Fases", D.fases);
-  s += ln("Espaço livre no quadro", D.espaco_quadro);
-  s += ln("Disjuntor a instalar", D.disjuntor_a, "A");
+  if(D.tipo !== TIPOS[2]) s += ln(rotuloDisjuntor().replace(" (A)", ""), D.disjuntor_existente, "A");
+  if(D.tipo === TIPOS[1]) s += ln("Disjuntor geral dos apartamentos", D.disjuntor_aptos, "A");
   s += ln("Aterramento existente", D.aterramento);
   s += ln("Medidor de kWh no quadro de recarga", D.medidor_kwh);
   s += "\n*PERCURSO E OBRA CIVIL*\n";
   s += ln("Distância até a vaga", D.distancia, "m");
   s += ln("Percurso", D.percurso);
-  s += ln("Furos em laje (40 mm)", D.furos_laje);
-  s += ln("Furos em viga (40 mm)", D.furos_viga);
+  s += ln("Furos em laje", vazio(D.furos_laje) ? "" : D.furos_laje + (D.furos_laje_diam ? " de " + D.furos_laje_diam : ""));
+  s += ln("Furos em viga", vazio(D.furos_viga) ? "" : D.furos_viga + (D.furos_viga_diam ? " de " + D.furos_viga_diam : ""));
   s += ln("Obstáculos", D.obstaculos);
   s += ln("Pedreiro e pintura", D.pedreiro);
   s += ln("Andaime ou escada especial", D.andaime);
   s += ln("Grau de dificuldade", D.dificuldade);
 
+  if(D.tipo !== TIPOS[2]){
   s += "\n*PONTO DE RECARGA*\n";
   s += ln("Tipo de ponto", D.tipo_ponto);
   s += ln("Wallbox fornecido por", D.wallbox_por);
@@ -748,8 +1018,8 @@ function resumoTexto(){
   s += ln("Modelo", D.modelo);
   s += ln("Potência", D.potencia_kw, "kW");
   s += ln("Conector", D.conector);
-  s += ln("DR Classe A", D.dr_classe_a);
   s += ln("Local do quadro de recarga", D.local_quadro);
+  }
 
   if(D.tipo === TIPOS[1]){
     s += "\n*INSTALAÇÃO COLETIVA*\n";
@@ -768,6 +1038,7 @@ function resumoTexto(){
   if(D.tipo === TIPOS[2]){
     s += "\n*CARREGADOR DC*\n";
     s += ln("Entrada de energia", D.dc_entrada);
+    s += ln("Disjuntor de origem", D.disjuntor_existente, "A");
     s += ln("Transformador existente", D.dc_trafo);
     s += ln("Potência do transformador", D.dc_trafo_kva, "kVA");
     s += ln("Demanda contratada", D.dc_dem_contratada);
@@ -783,6 +1054,17 @@ function resumoTexto(){
     s += ln("Área e manobra", D.dc_area);
     s += ln("Aprovação CEMIG", D.dc_cemig);
     s += ln("Instalação", D.dc_abrigo);
+    s += ln("Local do quadro de recarga", D.local_quadro);
+  }
+
+  var mats = matSelecionados();
+  if(mats.length){
+    s += "\n*MATERIAIS PREVISTOS*\n";
+    mats.forEach(function(i){
+      s += "• " + i.descricao + " — " + String(i.quantidade).replace(".", ",") + " " + i.unidade +
+           " × R$ " + moedaBR(i.precoUnitario) + " = R$ " + moedaBR(i.total) + "\n";
+    });
+    s += "Total de material: R$ " + moedaBR(matTotal()) + "\n";
   }
 
   s += "\n*RESULTADO*\n";
@@ -791,6 +1073,7 @@ function resumoTexto(){
   s += ln("Necessita projeto", D.necessitaProjeto);
   s += ln("Necessita retorno ao local", D.necessitaRetorno);
   s += ln("Prazo estimado de execução", D.prazo_dias, "dias");
+  s += ln("Preço do técnico", vazio(D.preco_tecnico) ? "" : "R$ " + moedaBR(D.preco_tecnico));
   s += ln("Observações", D.obsTecnico);
 
   s += "\n*FOTOS*: " + totalFotos() + " anexada(s)\n";
@@ -810,6 +1093,16 @@ function potenciaTotalDC(){
 }
 function nn(v){ return vazio(v) ? "" : v; }
 
+/* R$ no padrão brasileiro: 1250 -> 1.250,00 */
+function moedaBR(v){
+  if(vazio(v)) return "";
+  var n = parseFloat(String(v).replace(/\./g, ".").replace(",", "."));
+  if(!isFinite(n)) return String(v);
+  var p = n.toFixed(2).split("."), i = p[0], saida = "";
+  while(i.length > 3){ saida = "." + i.slice(-3) + saida; i = i.slice(0, -3); }
+  return i + saida + "," + p[1];
+}
+
 function statusSugerido(){
   if(D.realizada === "Não") return "Aguardando agendamento";
   if(D.resultado === "Inviável tecnicamente") return "Cancelada";
@@ -823,12 +1116,12 @@ function objeto(){
     cliente: nn(D.cliente),
     endereco: nn(D.endereco),
     tipo: nn(D.tipo),
-    tecnico: nn(D.tecnico),
+    tecnico: tecnicoNome(),
     real: {
       realizada: nn(D.realizada) || "Sim",
       dataVisita: nn(D.dataVisita),
       horaVisita: nn(D.horaVisita),
-      tecnicoExec: nn(D.tecnico),
+      tecnicoExec: tecnicoNome(),
       resultado: nn(D.resultado),
       necessitaOrcamento: nn(D.necessitaOrcamento),
       necessitaProjeto: nn(D.necessitaProjeto),
@@ -845,24 +1138,28 @@ function objeto(){
       origem: nn(D.origem),
       pontoDerivacao: nn(D.ponto_derivacao),
       tensao: nn(D.tensao),
-      fases: nn(D.fases),
-      espacoNoQuadro: nn(D.espaco_quadro),
-      disjuntorA: nn(D.disjuntor_a),
+      disjuntorExistente: nn(D.disjuntor_existente),
+      disjuntorExistenteDescricao: rotuloDisjuntor().replace(" (A)", ""),
+      disjuntorGeralApartamentos: nn(D.disjuntor_aptos),
       aterramento: nn(D.aterramento),
       medidorKwh: nn(D.medidor_kwh),
       distanciaM: nn(D.distancia),
       percurso: nn(D.percurso),
       furosLaje: nn(D.furos_laje),
+      furosLajeDiametro: nn(D.furos_laje_diam),
       furosViga: nn(D.furos_viga),
+      furosVigaDiametro: nn(D.furos_viga_diam),
       obstaculos: nn(D.obstaculos),
       pedreiroPintura: nn(D.pedreiro),
       andaime: nn(D.andaime),
       dificuldade: nn(D.dificuldade),
       tipoPonto: nn(D.tipo_ponto),
       wallboxFornecidoPor: nn(D.wallbox_por),
-      drClasseA: nn(D.dr_classe_a),
       localQuadroRecarga: nn(D.local_quadro),
       prazoDias: nn(D.prazo_dias),
+      precoTecnico: nn(D.preco_tecnico),
+      totalMateriais: matTotal(),
+      materiais: matSelecionados(),
       fotos: totalFotos(),
       fotosFaltando: fotosFaltando(),
       camposEmBranco: pendencias()
@@ -898,7 +1195,7 @@ function objeto(){
       potenciaTotal: tt == null ? "" : tt,
       fabricante: nn(D.dc_fabricante),
       modelo: nn(D.dc_modelo),
-      tensao: nn(D.tensao)
+      tensao: ""
     };
     o.vt.carregadorDC = {
       entradaEnergia: nn(D.dc_entrada),
@@ -926,7 +1223,7 @@ function render(manterScroll){
   var id = lista[passo], n = passo + 1, t = lista.length;
   var m = $("#main");
   var telas = { ident:telaIdent, realizada:telaRealizada, origem:telaOrigem, percurso:telaPercurso,
-    ponto:telaPonto, coletiva:telaColetiva, dc:telaDC, fotos:telaFotos, fechamento:telaFechamento, fim:telaFim };
+    ponto:telaPonto, coletiva:telaColetiva, dc:telaDC, materiais:telaMateriais, fotos:telaFotos, fechamento:telaFechamento, fim:telaFim };
   m.innerHTML = telas[id](n, t);
   window.scrollTo(0, manterScroll ? y : 0);
 
@@ -945,10 +1242,12 @@ function render(manterScroll){
   ligarOpcoes();
   if(id === "fim") ligarFim();
   if(id === "fotos") ligarFotos();
+  if(id === "materiais") ligarMateriais();
 }
 
 function validarEtapa(){
-  var id = etapasAtivas()[passo], req = OBRIGA[id] || [], falta = null;
+  var id = etapasAtivas()[passo], req = (OBRIGA[id] || []).slice(), falta = null;
+  if(id === "realizada" && D.realizada === "Não") req.push("motivo");
   req.forEach(function(k){
     var el = document.querySelector('[data-f="' + k + '"]');
     var msg = document.querySelector('[data-e="' + k + '"]');
@@ -1004,17 +1303,12 @@ document.addEventListener("change", function(e){
   var el = e.target, k = el.getAttribute && el.getAttribute("data-k");
   if(!k) return;
   D[k] = el.value;
-  if(k === "tecnico_sel"){
-    if(el.value === "Outro — digitar"){ D.tecnico = D.tecnico && TECNICOS.indexOf(D.tecnico) < 0 ? D.tecnico : ""; }
-    else { D.tecnico = el.value; }
-    salvar(); render(true); return;
-  }
   salvar();
   if(k === "dc_qtd" || k === "dc_pot") atualizaDCTotal();
 });
 
 /* opções que mudam a estrutura da tela e por isso exigem redesenho */
-var ESTRUTURAIS = ["tipo", "realizada", "origem", "tipo_ponto", "col_prumada", "dc_trafo"];
+var ESTRUTURAIS = ["tipo", "realizada", "origem", "tipo_ponto", "col_prumada", "dc_trafo", "tecnico_opt", "motivo"];
 
 /* Cada botão recebe o seu próprio onclick a cada desenho de tela. É mais
    compatível com WebView de celular do que delegação no documento. */
@@ -1024,6 +1318,11 @@ function ligarOpcoes(){
       var g = b.parentNode, k = g.getAttribute("data-opt"), v = b.getAttribute("data-v");
       D[k] = (D[k] === v && k !== "realizada" && k !== "tipo") ? "" : v;
       if(k === "origem" && v === ORIGEM_CONDOMINIO) D.medidor_kwh = "Sim";
+      /* Visita não realizada fecha na etapa 2 — o resultado sai do motivo. */
+      if(k === "motivo"){
+        D.resultado = (v === "Cliente ausente") ? "Cliente ausente" : "Necessita retorno ao local";
+        D.necessitaOrcamento = "Não"; D.necessitaProjeto = "Não"; D.necessitaRetorno = "Sim";
+      }
       salvar();
       if(ESTRUTURAIS.indexOf(k) >= 0){ render(true); return; }
       Array.prototype.forEach.call(g.querySelectorAll("[data-v]"), function(x){
@@ -1223,7 +1522,7 @@ function pedirNova(){
 $("#btnNova").onclick = pedirNova;
 
 function novaVisita(){
-  D = { dataVisita: hojeISO(), horaVisita: agoraHM(), realizada: "Sim" };
+  D = visitaVazia();
   FT = {}; passo = 0; concluida = false;
   limparRascunho(); salvar(); salvarFotos(); render();
 }
@@ -1233,7 +1532,7 @@ function novaVisita(){
    Rascunho e fotos entram depois, se o navegador permitir. Assim o
    formulário abre mesmo quando o celular bloqueia IndexedDB/localStorage. */
 function iniciar(){
-  D = { dataVisita: hojeISO(), horaVisita: agoraHM(), realizada: "Sim" };
+  D = visitaVazia();
   passo = 0;
   render();
 
